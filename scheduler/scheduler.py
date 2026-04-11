@@ -18,11 +18,11 @@ async def main():
     """
     scheduler = AsyncIOScheduler()
     
-    # Add the scraper job to run every day at 10:00 PM (22:00)
+    # Add the scraper job to run every day at 10:00 PM
     scheduler.add_job(
         run,
         CronTrigger(hour=22, minute=0),
-        id="job_scraper_daily",
+        id="job_scraper_daily_10pm",
         replace_existing=True
     )
     

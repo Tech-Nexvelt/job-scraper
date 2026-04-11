@@ -71,15 +71,58 @@ async def trigger_scrape(background_tasks: BackgroundTasks):
     background_tasks.add_task(asyncio.run, run_scraper())
     return {"status": "Scraping started in background"}
 
+class StatusRequest(BaseModel):
+    status: str
+
+@app.patch("/jobs/{job_id}/status")
+async def update_job_status(job_id: str, request: StatusRequest):
+    """
+    Updates the status of a specific job.
+    """
+    status = request.status
+    try:
+        result = supabase.table("jobs").update({"status": status}).eq("id", job_id).execute()
+        return result.data
+    except Exception as e:
+        print(f"Error updating job status: {str(e)}")
+        return {"error": str(e)}
+
+class SaveRequest(BaseModel):
+    is_saved: bool
+
+@app.patch("/jobs/{job_id}/save")
+async def toggle_job_save(job_id: str, request: SaveRequest):
+    """
+    Toggles the saved status of a specific job.
+    """
+    is_saved = request.is_saved
+    print(f"DEBUG: Toggling save for job {job_id} to {is_saved}")
+    try:
+        # Check if job exists first
+        check = supabase.table("jobs").select("id").eq("id", job_id).execute()
+        if not check.data:
+            print(f"DEBUG: Job {job_id} not found in database!")
+            return {"error": "Job not found"}
+            
+        result = supabase.table("jobs").update({"is_saved": is_saved}).eq("id", job_id).execute()
+        print(f"DEBUG: Update result: {result.data}")
+        return result.data
+    except Exception as e:
+        print(f"DEBUG: Exception during save: {str(e)}")
+        return {"error": str(e)}
+
 @app.get("/jobs")
 async def get_jobs():
     """
     Fetches all jobs from Supabase, ordered by newest first.
     """
     try:
+        print("Fetching jobs from Supabase...")
         result = supabase.table("jobs").select("*").order("created_at", desc=True).execute()
+        print(f"Succeesfully fetched {len(result.data)} jobs.")
         return result.data
     except Exception as e:
+        print(f"Error fetching jobs: {str(e)}")
         return {"error": str(e)}
 
 if __name__ == "__main__":

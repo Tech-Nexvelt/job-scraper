@@ -1,26 +1,21 @@
 "use client"
 
 import React from "react"
-import { MoreVertical, MapPin, Building2, ExternalLink, Bookmark } from "lucide-react"
+import { MapPin, Building2, ExternalLink, Bookmark } from "lucide-react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Job } from "@/lib/data"
 import { cn } from "@/lib/utils"
 
 interface JobCardProps {
   job: Job
   onToggleBookmark?: (id: string) => void
+  onMarkApplied?: (id: string) => void
   onClick?: (job: Job) => void
 }
 
-export function JobCard({ job, onToggleBookmark, onClick }: JobCardProps) {
+export function JobCard({ job, onToggleBookmark, onMarkApplied, onClick }: JobCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Applied": return "bg-blue-500/10 text-blue-500 hover:bg-blue-500/20"
@@ -62,17 +57,6 @@ export function JobCard({ job, onToggleBookmark, onClick }: JobCardProps) {
             >
               <Bookmark className="h-4 w-4" fill={job.isBookmarked ? "currentColor" : "none"} />
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger onClick={(e) => e.stopPropagation()}>
-                <div role="button" className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-muted transition-colors cursor-pointer">
-                  <MoreVertical className="h-4 w-4" />
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Edit Job</DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         </div>
 
@@ -102,6 +86,21 @@ export function JobCard({ job, onToggleBookmark, onClick }: JobCardProps) {
         >
           Apply Now <ExternalLink className="h-3 w-3" />
         </a>
+        
+        {job.status !== "Applied" && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="ml-2 h-7 rounded-lg text-[10px] font-bold uppercase tracking-tight bg-emerald-500/5 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all shadow-none"
+            onClick={(e) => {
+              e.stopPropagation()
+              onMarkApplied?.(job.id)
+            }}
+          >
+            Mark Applied
+          </Button>
+        )}
+
         <div className="ml-auto text-[11px] text-muted-foreground font-medium">
           Added {job.dateAdded}
         </div>

@@ -11,22 +11,17 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { MoreVertical, ExternalLink, Bookmark } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { ExternalLink, Bookmark, CheckCircle2 } from "lucide-react"
 import { Job } from "@/lib/data"
 import { cn } from "@/lib/utils"
 
 interface JobTableProps {
   jobs: Job[]
   onToggleBookmark?: (id: string) => void
+  onMarkApplied?: (id: string) => void
 }
 
-export function JobTable({ jobs, onToggleBookmark }: JobTableProps) {
+export function JobTable({ jobs, onToggleBookmark, onMarkApplied }: JobTableProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Applied": return "bg-blue-500/10 text-blue-500"
@@ -96,17 +91,19 @@ export function JobTable({ jobs, onToggleBookmark }: JobTableProps) {
                   >
                     <ExternalLink className="h-4 w-4" />
                   </a>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger>
-                      <div role="button" className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-muted transition-colors cursor-pointer focus:outline-none">
-                        <MoreVertical className="h-4 w-4" />
-                      </div>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  {job.status !== "Applied" && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-full text-emerald-500 hover:text-emerald-600 hover:bg-emerald-500/10"
+                      onClick={() => {
+                        onMarkApplied?.(job.id);
+                      }}
+                      title="Mark as Applied"
+                    >
+                      <CheckCircle2 className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </TableCell>
             </TableRow>

@@ -25,6 +25,7 @@ export function ATSScoreDialog({ job, isOpen, onClose }: ATSScoreDialogProps) {
   const [score, setScore] = useState<number | null>(null)
   const [feedback, setFeedback] = useState<string[]>([])
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleAnalyze = async () => {
     if (!resume.trim() || !job) return
@@ -42,10 +43,14 @@ export function ATSScoreDialog({ job, isOpen, onClose }: ATSScoreDialogProps) {
       })
       
       const data = await response.json()
+      if (data.error) throw new Error(data.error)
+      
       setScore(data.score)
       setFeedback(data.feedback)
-    } catch (error) {
-      console.error("Analysis failed:", error)
+      setError(null)
+    } catch (err: any) {
+      console.error("Analysis failed:", err)
+      setError("Failed to connect to AI backend. Ensure the server is running on port 8000.")
     } finally {
       setIsAnalyzing(false)
     }
@@ -130,6 +135,13 @@ export function ATSScoreDialog({ job, isOpen, onClose }: ATSScoreDialogProps) {
                   ))}
                 </div>
               </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="p-4 bg-destructive/10 text-destructive rounded-2xl flex items-center gap-2 text-sm">
+              <AlertCircle className="h-4 w-4" />
+              {error}
             </div>
           )}
         </div>

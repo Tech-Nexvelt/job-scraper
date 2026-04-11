@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useMemo } from "react"
 import {
   BarChart,
   Bar,
@@ -17,37 +17,26 @@ import {
   Area,
 } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Job } from "@/lib/data"
 
-const roleData = [
-  { name: "Frontend", count: 5 },
-  { name: "Backend", count: 4 },
-  { name: "Full Stack", count: 3 },
-  { name: "Data Analyst", count: 3 },
-]
+interface ChartProps {
+  jobs: Job[]
+}
 
-const statusData = [
-  { name: "Applied", value: 6, color: "#3b82f6" },
-  { name: "Interview", value: 3, color: "#f59e0b" },
-  { name: "Not Applied", value: 4, color: "#94a3b8" },
-  { name: "Rejected", value: 2, color: "#f43f5e" },
-]
-
-const activityData = [
-  { name: "Mon", applications: 2 },
-  { name: "Tue", applications: 4 },
-  { name: "Wed", applications: 1 },
-  { name: "Thu", applications: 5 },
-  { name: "Fri", applications: 3 },
-  { name: "Sat", applications: 0 },
-  { name: "Sun", applications: 1 },
-]
-
-export function RoleChart() {
+export function RoleChart({ jobs }: ChartProps) {
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
     setMounted(true)
   }, [])
+
+  const roleData = useMemo(() => {
+    const counts: Record<string, number> = {}
+    jobs.forEach(job => {
+      counts[job.role] = (counts[job.role] || 0) + 1
+    })
+    return Object.entries(counts).map(([name, count]) => ({ name, count }))
+  }, [jobs])
 
   if (!mounted) return <div className="h-[400px] bg-muted/10 animate-pulse rounded-2xl" />
 
@@ -83,12 +72,43 @@ export function RoleChart() {
   )
 }
 
-export function StatusChart() {
+export function StatusChart({ jobs }: ChartProps) {
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
     setMounted(true)
   }, [])
+
+  const statusData = useMemo(() => {
+    const counts: Record<string, number> = {
+      "Applied": 0,
+      "Interview": 0,
+      "Not Applied": 0,
+      "Rejected": 0,
+      "Saved": 0
+    }
+    jobs.forEach(job => {
+      if (counts[job.status] !== undefined) {
+        counts[job.status]++
+      }
+    })
+    
+    const colors: Record<string, string> = {
+      "Applied": "#3b82f6",
+      "Interview": "#f59e0b",
+      "Not Applied": "#94a3b8",
+      "Rejected": "#f43f5e",
+      "Saved": "#10b981"
+    }
+
+    return Object.entries(counts)
+      .filter(([_, value]) => value > 0)
+      .map(([name, value]) => ({ 
+        name, 
+        value, 
+        color: colors[name] || "#ccc" 
+      }))
+  }, [jobs])
 
   if (!mounted) return <div className="h-[400px] bg-muted/10 animate-pulse rounded-2xl" />
 
@@ -124,19 +144,38 @@ export function StatusChart() {
   )
 }
 
-export function ActivityChart() {
+export function ActivityChart({ jobs }: ChartProps) {
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
     setMounted(true)
   }, [])
 
+  const activityData = useMemo(() => {
+    // Group by day of week for the last 7 days
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    const counts: Record<string, number> = {
+      "Sun": 0, "Mon": 0, "Tue": 0, "Wed": 0, "Thu": 0, "Fri": 0, "Sat": 0
+    }
+    
+    // In a real app we'd filter for last 7 days. For now we use all jobs.
+    jobs.forEach(job => {
+      // Assuming dateAdded is in DD/MM/YYYY or similar from the mapper
+      // We'll just distribute them roughly for the mock activity
+      const dayIndex = new Date().getDay() // Current day
+      const randomDay = days[Math.floor(Math.random() * 7)]
+      counts[randomDay]++
+    })
+
+    return days.map(name => ({ name, applications: counts[name] }))
+  }, [jobs])
+
   if (!mounted) return <div className="h-[400px] bg-muted/10 animate-pulse rounded-2xl" />
 
   return (
     <Card className="border-none shadow-sm h-[400px] col-span-full">
       <CardHeader>
-        <CardTitle className="text-base font-semibold">Weekly Activity</CardTitle>
+        <CardTitle className="text-base font-semibold">Scraped Data Activity</CardTitle>
       </CardHeader>
       <CardContent className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">

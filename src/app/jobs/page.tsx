@@ -9,23 +9,15 @@ import { useSearchParams } from "next/navigation"
 import { fetchJobs } from "@/lib/api"
 import { ATSScoreDialog } from "@/components/ATSScoreDialog"
 
+import { useJobs } from "@/hooks/useJobs"
+
 function JobsContent() {
-  const [jobs, setJobs] = useState<Job[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const { jobs, isLoading, toggleBookmark, updateStatus } = useJobs()
   const [view, setView] = useState<"card" | "table">("card")
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
   
   const searchParams = useSearchParams()
 
-  useEffect(() => {
-    async function loadJobs() {
-      setIsLoading(true)
-      const data = await fetchJobs()
-      setJobs(data)
-      setIsLoading(false)
-    }
-    loadJobs()
-  }, [])
   const searchQuery = searchParams.get("q") || ""
   const roleFilter = searchParams.get("role") || "all"
   const statusFilter = searchParams.get("status") || "all"
@@ -42,12 +34,6 @@ function JobsContent() {
       return matchesSearch && matchesRole && matchesStatus
     })
   }, [jobs, searchQuery, roleFilter, statusFilter])
-
-  const toggleBookmark = (id: string) => {
-    setJobs(prev => prev.map(job => 
-      job.id === id ? { ...job, isBookmarked: !job.isBookmarked } : job
-    ))
-  }
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
@@ -71,13 +57,18 @@ function JobsContent() {
               <JobCard 
                 key={job.id} 
                 job={job} 
-                onToggleBookmark={toggleBookmark} 
+                onToggleBookmark={() => toggleBookmark(job.id)} 
+                onMarkApplied={() => updateStatus(job.id, "Applied")}
                 onClick={setSelectedJob}
               />
             ))}
           </div>
         ) : (
-          <JobTable jobs={filteredJobs} onToggleBookmark={toggleBookmark} />
+          <JobTable 
+            jobs={filteredJobs} 
+            onToggleBookmark={(id) => toggleBookmark(id)} 
+            onMarkApplied={(id) => updateStatus(id, "Applied")}
+          />
         )
       ) : (
         <div className="flex flex-col items-center justify-center py-20 bg-muted/20 rounded-3xl border-2 border-dashed">

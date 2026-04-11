@@ -8,6 +8,7 @@ import {
   Briefcase, 
   BarChart3, 
   Bookmark, 
+  CheckCircle2,
   Settings, 
   ChevronLeft, 
   ChevronRight,
@@ -20,6 +21,7 @@ const menuItems = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { name: "All Jobs", icon: Briefcase, href: "/jobs" },
   { name: "Saved Jobs", icon: Bookmark, href: "/saved" },
+  { name: "Applied Jobs", icon: CheckCircle2, href: "/applied" },
   { name: "Analytics", icon: BarChart3, href: "/analytics" },
 ]
 

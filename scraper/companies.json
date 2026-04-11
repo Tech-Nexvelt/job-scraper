@@ -2,13 +2,141 @@
   {
     "name": "Microsoft",
     "careers_url": "https://apply.careers.microsoft.com/careers?location=United%20States&location=United%20Kingdom&employmentType=Full-Time",
-    "type": "dynamic",
+    "provider": "custom",
+    "location": "USA/UK",
     "max_jobs": 20
   },
   {
     "name": "Google",
     "careers_url": "https://www.google.com/about/careers/applications/jobs/results/?location=United%20States&location=United%20Kingdom&employment_type=FULL_TIME",
-    "type": "dynamic",
+    "provider": "custom",
+    "location": "USA/UK",
+    "max_jobs": 20
+  },
+  {
+    "name": "Discord",
+    "careers_url": "https://boards.greenhouse.io/discord",
+    "provider": "greenhouse",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "Netflix",
+    "careers_url": "https://jobs.lever.co/netflix",
+    "provider": "lever",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "NVIDIA",
+    "careers_url": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite",
+    "provider": "workday",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "Salesforce",
+    "careers_url": "https://salesforce.wd1.myworkdayjobs.com/ExternalCareerSite",
+    "provider": "workday",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "Adobe",
+    "careers_url": "https://adobe.wd5.myworkdayjobs.com/external_experienced",
+    "provider": "workday",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "Intel",
+    "careers_url": "https://intel.wd1.myworkdayjobs.com/External",
+    "provider": "workday",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "DoorDash",
+    "careers_url": "https://boards.greenhouse.io/doordash",
+    "provider": "greenhouse",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "Airbnb",
+    "careers_url": "https://boards.greenhouse.io/airbnb",
+    "provider": "greenhouse",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "Barclays",
+    "careers_url": "https://barclays.wd3.myworkdayjobs.com/BarclaysExternal",
+    "provider": "workday",
+    "location": "UK",
+    "max_jobs": 20
+  },
+  {
+    "name": "Unilever",
+    "careers_url": "https://unilever.wd3.myworkdayjobs.com/ExternalCareerSite",
+    "provider": "workday",
+    "location": "UK/Global",
+    "max_jobs": 20
+  },
+  {
+    "name": "GSK",
+    "careers_url": "https://gsk.wd5.myworkdayjobs.com/GSKCareers",
+    "provider": "workday",
+    "location": "UK/Global",
+    "max_jobs": 20
+  },
+  {
+    "name": "Dropbox",
+    "careers_url": "https://boards.greenhouse.io/dropbox",
+    "provider": "greenhouse",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "Yelp",
+    "careers_url": "https://boards.greenhouse.io/yelp",
+    "provider": "greenhouse",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "Figma",
+    "careers_url": "https://boards.greenhouse.io/figma",
+    "provider": "greenhouse",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "Github",
+    "careers_url": "https://boards.greenhouse.io/github",
+    "provider": "greenhouse",
+    "location": "USA",
+    "max_jobs": 20
+  },
+  {
+    "name": "Atlassian",
+    "careers_url": "https://boards.greenhouse.io/atlassian",
+    "provider": "greenhouse",
+    "location": "USA/Global",
+    "max_jobs": 20
+  },
+  {
+    "name": "Spotify",
+    "careers_url": "https://jobs.lever.co/spotify",
+    "provider": "lever",
+    "location": "Global",
+    "max_jobs": 20
+  },
+  {
+    "name": "Palantir",
+    "careers_url": "https://boards.greenhouse.io/palantirtechnologies",
+    "provider": "greenhouse",
+    "location": "USA/UK",
     "max_jobs": 20
   }
 ]

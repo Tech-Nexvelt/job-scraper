@@ -4,93 +4,189 @@ import logging
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import List, Dict
+from playwright.async_api import async_playwright
 
-from scraper.company_scraper import scrape_company
+# Import providers
+from scraper.providers.greenhouse import scrape_greenhouse
+from scraper.providers.lever import scrape_lever
+from scraper.providers.workday import scrape_workday
+from scraper.providers.custom import scrape_custom
+
 from scraper.role_classifier import classify_role
 from scraper.deduplicator import filter_new_jobs
 from scraper.supabase_client import supabase
 from scraper.notifier import send_scraping_alert
 
 # Configure logging
+LOG_FILE = Path(__file__).parent / "scraper.log"
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
+    handlers=[
+        logging.FileHandler(LOG_FILE),
+        logging.StreamHandler()
+    ]
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("job_scraper")
 
 COMPANIES_PATH = Path(__file__).parent / "companies.json"
 
+# Concurrency limit
+SEMAPHORE = asyncio.Semaphore(5)
+
+async def scrape_wrapper(company: Dict, browser_context) -> List[Dict]:
+    """
+    Wrapper to handle individual company scraping with retries and provider detection.
+    """
+    name = company["name"]
+    provider = company.get("provider", "custom")
+    url = company["careers_url"]
+    
+    async with SEMAPHORE:
+        for attempt in range(3): # Max 2 retries (3 attempts total)
+            try:
+                logger.info(f"Scraping {name} (Provider: {provider}, Attempt: {attempt + 1})")
+                page = await browser_context.new_page()
+                
+                jobs = []
+                if provider == "greenhouse":
+                    jobs = await scrape_greenhouse(company, page)
+                elif provider == "lever":
+                    jobs = await scrape_lever(company, page)
+                elif provider == "workday":
+                    jobs = await scrape_workday(company, page)
+                else:
+                    jobs = await scrape_custom(company, page)
+                
+                await page.close()
+                
+                if jobs:
+                    logger.info(f"Successfully scraped {len(jobs)} jobs from {name}")
+                else:
+                    logger.warning(f"No jobs found for {name}")
+                    
+                return jobs
+            except Exception as e:
+                logger.error(f"Error scraping {name} (Attempt {attempt + 1}): {str(e)}")
+                if attempt < 2:
+                    await asyncio.sleep(2 ** attempt) # Exponential backoff
+                else:
+                    logger.error(f"Failed to scrape {name} after 3 attempts.")
+                    return []
+    return []
+
 async def run() -> int:
     """
-    Main execution flow for the scraper.
-    Reads companies, scrapes, classifies, deduplicates, and saves to Supabase.
+    Main entry point for the parallel scraper.
     """
-    if not COMPANIES_PATH.exists():
-        logger.error(f"Companies file not found at {COMPANIES_PATH}")
-        return 0
-
     try:
-        companies = json.loads(COMPANIES_PATH.read_text())
+        # Fetch active companies from Supabase
+        result = supabase.table("companies").select("*").eq("is_active", True).execute()
+        companies_data = result.data
+        if not companies_data:
+            raise ValueError("No companies found in database")
+        logger.info(f"Fetched {len(companies_data)} companies from Supabase.")
     except Exception as e:
-        logger.error(f"Failed to read companies.json: {str(e)}")
-        return 0
+        logger.warning(f"Supabase fetch failed or empty: {str(e)}. Falling back to local companies.json")
+        if COMPANIES_PATH.exists():
+            companies_data = json.loads(COMPANIES_PATH.read_text())
+        else:
+            logger.error("No companies found in database or local JSON.")
+            return 0
 
     total_inserted = 0
+    start_time = datetime.now()
 
-    for company in companies:
-        logger.info(f"--- Processing {company['name']} ---")
-        try:
-            # Step 1: Scrape
-            raw_jobs = await scrape_company(company)
-            if not raw_jobs:
-                continue
-
-            # Step 2: Classify and Enrich
-            for job in raw_jobs:
-                job["role"] = classify_role(
-                    job.get("job_title", ""),
-                    job.get("description", "")
-                )
-                job["source"] = "company_career_page"
-                job["last_scraped_at"] = datetime.now(timezone.utc).isoformat()
-                # Remove description before database insertion to keep table lean if desired
-                # job.pop("description", None)
-
-            # Step 3: Deduplicate
-            new_jobs = filter_new_jobs(raw_jobs)
-            
-            # Step 4: Insert
-            if new_jobs:
-                try:
-                    # Clean up jobs for insertion (remove extra keys like 'description' if not in schema)
-                    data_to_insert = []
-                    for j in new_jobs:
-                        data_to_insert.append({
-                            "job_title": j["job_title"],
-                            "company": j["company"],
-                            "location": j["location"],
-                            "role": j["role"],
-                            "apply_link": j["apply_link"],
-                            "source": j["source"],
-                            "last_scraped_at": j["last_scraped_at"]
-                        })
-
-                    supabase.table("jobs").insert(data_to_insert).execute()
-                    total_inserted += len(data_to_insert)
-                    logger.info(f"Inserted {len(data_to_insert)} jobs from {company['name']}")
-                except Exception as e:
-                    logger.error(f"Insert failed for {company['name']}: {str(e)}")
-
-        except Exception as e:
-            logger.error(f"An unexpected error occurred while processing {company['name']}: {str(e)}")
-
-    logger.info(f"Total scraping session complete. {total_inserted} new jobs added.")
-    
-    # Send email alert
-    if total_inserted > 0:
-        send_scraping_alert(total_inserted)
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        # Use a single context to manage pages
+        context = await browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+            viewport={"width": 1280, "height": 800}
+        )
         
+        # Create tasks for all companies
+        tasks = [scrape_wrapper(company, context) for company in companies_data]
+        
+        # Run in parallel
+        results = await asyncio.gather(*tasks)
+        
+        await browser.close()
+
+    # Process results
+    all_raw_jobs = []
+    for company_jobs in results:
+        all_raw_jobs.extend(company_jobs)
+
+    if not all_raw_jobs:
+        logger.info("No jobs found in this session.")
+        return 0
+
+    # Step enrichment and classification
+    enriched_jobs = []
+    for job in all_raw_jobs:
+        job["role"] = classify_role(job["job_title"], job.get("description", ""))
+        job["last_scraped_at"] = datetime.now(timezone.utc).isoformat()
+        enriched_jobs.append(job)
+
+    # Deduplicate
+    new_jobs = filter_new_jobs(enriched_jobs)
+    
+    # Insert into Supabase
+    if new_jobs:
+        try:
+            data_to_insert = []
+            for j in new_jobs:
+                data_to_insert.append({
+                    "job_title": j["job_title"],
+                    "company": j["company"],
+                    "location": j["location"],
+                    "role": j["role"],
+                    "apply_link": j["apply_link"],
+                    "source": j.get("source", "company_career_page"),
+                    "last_scraped_at": j["last_scraped_at"]
+                })
+
+            # Chunk insertion for reliability
+            CHUNK_SIZE = 50
+            for i in range(0, len(data_to_insert), CHUNK_SIZE):
+                chunk = data_to_insert[i:i + CHUNK_SIZE]
+                supabase.table("jobs").insert(chunk).execute()
+            
+            total_inserted = len(data_to_insert)
+            logger.info(f"Inserted {total_inserted} new jobs into Supabase.")
+        except Exception as e:
+            logger.error(f"Failed to insert jobs into Supabase: {str(e)}")
+
+    # Update last_scraped_at
+    try:
+        current_time = datetime.now(timezone.utc).isoformat()
+        # Only update Supabase if we have IDs (meaning we didn't fall back fully to JSON)
+        # Or if we want to update the JSON file back
+        can_update_db = any("id" in c for c in companies_data)
+        
+        if can_update_db:
+            for company in companies_data:
+                if "id" in company:
+                    supabase.table("companies").update({"last_scraped_at": current_time}).eq("id", company["id"]).execute()
+            logger.info("Updated last_scraped_at for all companies in Supabase.")
+        else:
+            # Update the JSON file instead
+            for company in companies_data:
+                company["last_scraped_at"] = current_time
+            COMPANIES_PATH.write_text(json.dumps(companies_data, indent=2))
+            logger.info("Updated last_scraped_at in local companies.json.")
+
+    except Exception as e:
+        logger.error(f"Failed to update companies: {str(e)}")
+
+    # Send email alert (always send to confirm status)
+    send_scraping_alert(total_inserted)
+
+    end_time = datetime.now()
+    duration = (end_time - start_time).total_seconds()
+    logger.info(f"Scraping session finished in {duration:.2f}s. Total New Jobs: {total_inserted}")
+    
     return total_inserted
 
 if __name__ == "__main__":
