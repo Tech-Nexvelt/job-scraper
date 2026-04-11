@@ -29,7 +29,19 @@ const monthlyPerformance = [
   { month: "Apr", applications: 15, interviews: 5 },
 ]
 
+import { useJobs } from "@/hooks/useJobs"
+
 export default function AnalyticsPage() {
+  const { jobs, isLoading } = useJobs()
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-10">
       <div>
@@ -38,8 +50,8 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <RoleChart />
-        <StatusChart />
+        <RoleChart jobs={jobs} />
+        <StatusChart jobs={jobs} />
         <Card className="border-none shadow-sm h-[400px]">
           <CardHeader>
             <CardTitle className="text-base font-semibold">Success Ratio</CardTitle>
@@ -90,7 +102,7 @@ export default function AnalyticsPage() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
-        <ActivityChart />
+        <ActivityChart jobs={jobs} />
       </div>
     </div>
   )
