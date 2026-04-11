@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ProfileProvider } from "@/context/profile-context";
 import { Sidebar } from "@/components/Sidebar";
 import { Navbar } from "@/components/Navbar";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +43,9 @@ export default function RootLayout({
             <div className="flex h-screen overflow-hidden bg-background">
               <Sidebar />
               <div className="flex flex-1 flex-col overflow-hidden">
-                <Navbar />
+                <Suspense>
+                  <Navbar />
+                </Suspense>
                 <main className="flex-1 overflow-y-auto p-6">
                   {children}
                 </main>
