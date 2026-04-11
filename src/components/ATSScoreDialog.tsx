@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Job } from "@/lib/data"
 import { FileText, Brain, CheckCircle2, AlertCircle, Loader2 } from "lucide-react"
-import { Progress } from "@/components/ui/progress"
 
 interface ATSScoreDialogProps {
   job: Job | null
