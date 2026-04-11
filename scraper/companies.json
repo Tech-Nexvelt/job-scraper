@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Microsoft",
+    "careers_url": "https://apply.careers.microsoft.com/careers?location=United%20States&location=United%20Kingdom&employmentType=Full-Time",
+    "type": "dynamic",
+    "max_jobs": 20
+  },
+  {
+    "name": "Google",
+    "careers_url": "https://www.google.com/about/careers/applications/jobs/results/?location=United%20States&location=United%20Kingdom&employment_type=FULL_TIME",
+    "type": "dynamic",
+    "max_jobs": 20
+  }
+]
