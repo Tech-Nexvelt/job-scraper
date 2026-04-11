@@ -45,7 +45,7 @@ export function Navbar() {
     }
   }
 
-  const handleFilter = (key: string, value: string) => {
+  const handleFilter = (key: string, value: string | null) => {
     const params = new URLSearchParams(searchParams)
     if (value && value !== "all") params.set(key, value)
     else params.delete(key)
