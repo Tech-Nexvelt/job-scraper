@@ -34,7 +34,7 @@ async def scrape_workday(company: Dict, page: Page) -> List[Dict]:
         # Extract titles and links
         elements = await page.query_selector_all(selector)
         
-        for el in elements[:max_jobs]:
+        for el in elements:
             # If we matched jobTitle directly, use it. If we matched posting, find title inside.
             title_el = el if selector == "[data-automation-id='jobTitle']" else await el.query_selector("[data-automation-id='jobTitle']")
             
@@ -46,6 +46,15 @@ async def scrape_workday(company: Dict, page: Page) -> List[Dict]:
                 location = company.get("location", "USA")
                 
                 if title_text:
+                    # STRICT FILTER: Only Onsite, No Remote, No Hybrid
+                    title_lower = title_text.lower()
+                    location_lower = location.lower()
+                    
+                    is_remote = any(k in title_lower or k in location_lower for k in ["remote", "hybrid", "wfh", "telecommute"])
+                    if is_remote:
+                        logger.info(f"Skipping remote/hybrid job at {name}: {title_text}")
+                        continue
+
                     full_link = href if href and href.startswith("http") else url # Fallback to portal URL
                     jobs.append({
                         "job_title": title_text.strip(),

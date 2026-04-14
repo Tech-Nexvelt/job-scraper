@@ -22,7 +22,7 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
         try:
             await page.wait_for_selector("a[id^='job-card-']", timeout=40000)
             cards = await page.query_selector_all("a[id^='job-card-']")
-            for card in cards[:max_jobs]:
+            for card in cards:
                 title_el = await card.query_selector("div[class*='job-title']")
                 title = await title_el.inner_text() if title_el else await card.get_attribute("aria-label")
                 if title and "view job:" in title.lower():
@@ -35,6 +35,14 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
                     # Use static location from config
                     location = company.get("location", "USA")
                     
+                    # STRICT FILTER: Only Onsite, No Remote, No Hybrid
+                    title_lower = title.lower()
+                    location_lower = location.lower()
+                    is_remote = any(k in title_lower or k in location_lower for k in ["remote", "hybrid", "wfh", "telecommute"])
+                    if is_remote:
+                        logger.info(f"Skipping remote/hybrid job at Microsoft: {title}")
+                        continue
+
                     jobs.append({
                         "job_title": title.strip(),
                         "company": name,
@@ -51,7 +59,7 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
         try:
             await page.wait_for_selector("a[aria-label^='Learn more about']", timeout=40000)
             cards = await page.query_selector_all("a[aria-label^='Learn more about']")
-            for card in cards[:max_jobs]:
+            for card in cards:
                 title = await card.get_attribute("aria-label")
                 if title:
                     title = title.replace("Learn more about", "").strip()
@@ -63,6 +71,14 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
                 location = company.get("location", "USA")
                 
                 if title and "page not found" not in title.lower():
+                    # STRICT FILTER: Only Onsite, No Remote, No Hybrid
+                    title_lower = title.lower()
+                    location_lower = location.lower()
+                    is_remote = any(k in title_lower or k in location_lower for k in ["remote", "hybrid", "wfh", "telecommute"])
+                    if is_remote:
+                        logger.info(f"Skipping remote/hybrid job at Google: {title}")
+                        continue
+
                     jobs.append({
                         "job_title": title.strip(),
                         "company": name,
@@ -79,13 +95,23 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
     if not jobs:
         try:
             found_elements = await page.query_selector_all("h1, h2, h3, h4")
-            for el in found_elements[:max_jobs]:
+            for el in found_elements:
                 title = await el.inner_text()
                 if title and len(title.strip()) > 5 and "page not found" not in title.lower():
+                    # Use static location from config
+                    location = company.get("location", "USA")
+                    
+                    # STRICT FILTER: Only Onsite, No Remote, No Hybrid
+                    title_lower = title.lower()
+                    location_lower = location.lower()
+                    is_remote = any(k in title_lower or k in location_lower for k in ["remote", "hybrid", "wfh", "telecommute"])
+                    if is_remote:
+                        continue
+
                     jobs.append({
                         "job_title": title.strip(),
                         "company": name,
-                        "location": company.get("location", "USA"),
+                        "location": location.strip(),
                         "apply_link": url, 
                         "description": f"Position found at {name} career portal",
                         "date_posted": "Recent",

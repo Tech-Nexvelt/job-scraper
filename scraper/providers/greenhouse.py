@@ -29,7 +29,7 @@ async def scrape_greenhouse(company: Dict, page: Page) -> List[Dict]:
         await page.wait_for_selector(".opening", timeout=45000)
         
         cards = await page.query_selector_all(".opening")
-        for card in cards[:max_jobs]:
+        for card in cards:
             link_el = await card.query_selector("a")
             # Get text content while filtering out extra whitespace
             title = await link_el.inner_text() if link_el else ""
@@ -39,6 +39,15 @@ async def scrape_greenhouse(company: Dict, page: Page) -> List[Dict]:
             location = company.get("location", "USA")
             
             if title and href:
+                # STRICT FILTER: Only Onsite, No Remote, No Hybrid
+                title_lower = title.lower()
+                location_lower = location.lower()
+                
+                is_remote = any(k in title_lower or k in location_lower for k in ["remote", "hybrid", "wfh", "telecommute"])
+                if is_remote:
+                    logger.info(f"Skipping remote/hybrid job at {name}: {title}")
+                    continue
+
                 # Handle relative links
                 full_link = href if href.startswith("http") else f"https://boards.greenhouse.io{href}"
                 jobs.append({

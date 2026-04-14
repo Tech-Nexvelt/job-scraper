@@ -25,7 +25,7 @@ async def scrape_lever(company: Dict, page: Page) -> List[Dict]:
         await page.wait_for_selector(".posting", timeout=30000)
         
         postings = await page.query_selector_all(".posting")
-        for posting in postings[:max_jobs]:
+        for posting in postings:
             title_el = await posting.query_selector("h5")
             title = await title_el.inner_text() if title_el else ""
             
@@ -36,6 +36,15 @@ async def scrape_lever(company: Dict, page: Page) -> List[Dict]:
             location = company.get("location", "USA")
             
             if title and href:
+                # STRICT FILTER: Only Onsite, No Remote, No Hybrid
+                title_lower = title.lower()
+                location_lower = location.lower()
+                
+                is_remote = any(k in title_lower or k in location_lower for k in ["remote", "hybrid", "wfh", "telecommute"])
+                if is_remote:
+                    logger.info(f"Skipping remote/hybrid job at {name}: {title}")
+                    continue
+
                 jobs.append({
                     "job_title": title.strip(),
                     "company": name,
