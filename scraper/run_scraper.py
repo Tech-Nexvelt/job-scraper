@@ -93,19 +93,20 @@ async def run() -> int:
     Main entry point for the parallel scraper.
     """
     try:
-        # Fetch active companies from Supabase
-        result = supabase.table("companies").select("*").eq("is_active", True).execute()
-        companies_data = result.data
-        if not companies_data:
-            raise ValueError("No companies found in database")
-        logger.info(f"Fetched {len(companies_data)} companies from Supabase.")
-    except Exception as e:
-        logger.warning(f"Supabase fetch failed or empty: {str(e)}. Falling back to local companies.json")
+        # Prioritize local companies.json as the master source of truth
         if COMPANIES_PATH.exists():
             companies_data = json.loads(COMPANIES_PATH.read_text())
+            logger.info(f"Loaded {len(companies_data)} companies from local companies.json (Master List).")
         else:
-            logger.error("No companies found in database or local JSON.")
-            return 0
+            # Fallback to Supabase if JSON is missing
+            result = supabase.table("companies").select("*").eq("is_active", True).execute()
+            companies_data = result.data
+            if not companies_data:
+                raise ValueError("No companies found in JSON or Supabase")
+            logger.info(f"Fetched {len(companies_data)} companies from Supabase (Fallback).")
+    except Exception as e:
+        logger.error(f"Failed to load companies: {str(e)}")
+        return 0
 
     total_inserted = 0
     start_time = datetime.now()
