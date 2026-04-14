@@ -1,4 +1,5 @@
 name: Daily Job Scrape
+# Triggered daily and manually
 
 on:
   schedule:
