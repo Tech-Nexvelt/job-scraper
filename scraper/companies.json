@@ -197,9 +197,8 @@
   },
   {
     "name": "Palantir",
-    "careers_url": "https://boards.greenhouse.io/palantirtechnologies",
-    "provider": "greenhouse",
-    "location": "USA/UK",
-    "max_jobs": 20
+    "careers_url": "https://jobs.lever.co/palantir",
+    "provider": "lever",
+    "location": "USA/UK"
   }
 ]
