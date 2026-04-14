@@ -87,6 +87,17 @@ function JobsContent() {
     return Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0]))
   }, [filteredJobs])
 
+  // Generate the last 4 days as quick-select tabs (today, yesterday, day before, 3 days ago)
+  const quickDays = todayStr
+    ? Array.from({ length: 4 }, (_, i) => {
+        const d = format(subDays(new Date(todayStr), i), "yyyy-MM-dd")
+        const label = i === 0 ? "Today" : i === 1 ? "Yesterday" : format(new Date(d), "dd/MM")
+        return { dateStr: d, label }
+      })
+    : []
+
+  const activeDateStr = date ? format(date, "yyyy-MM-dd") : null
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -94,11 +105,41 @@ function JobsContent() {
           <h1 className="text-3xl font-bold tracking-tight">All Jobs</h1>
           <p className="text-muted-foreground">Manage and track all your job applications</p>
         </div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <DatePicker date={date} setDate={setDate} label="Filter by day" />
-          <ToggleView view={view} onViewChange={setView} />
-        </div>
+        <ToggleView view={view} onViewChange={setView} />
       </div>
+
+      {/* Quick-select date tab strip */}
+      {todayStr && (
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          {[...quickDays].reverse().map(({ dateStr: d, label }) => {
+            const isActive = activeDateStr === d
+            return (
+              <button
+                key={d}
+                onClick={() => {
+                  setShowAll(false)
+                  if (activeDateStr === d) {
+                    setDate(undefined) // tap again to deselect → back to 7-day view
+                  } else {
+                    setDate(new Date(d + "T00:00:00"))
+                  }
+                }}
+                className={[
+                  "flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border-2 transition-all duration-200",
+                  isActive
+                    ? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
+                    : "bg-background text-muted-foreground border-border hover:border-primary/60 hover:text-primary hover:scale-105",
+                ].join(" ")}
+              >
+                <CalendarIcon className="size-3.5" />
+                {label}
+              </button>
+            )
+          })}
+          <div className="h-px flex-1 bg-border min-w-4" />
+          <DatePicker date={date && !quickDays.some(d => d.dateStr === activeDateStr) ? date : undefined} setDate={setDate} label="Older dates…" />
+        </div>
+      )}
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20">
