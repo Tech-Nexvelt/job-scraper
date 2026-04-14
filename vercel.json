@@ -9,7 +9,7 @@
   "crons": [
     {
       "path": "/api/scrape/run",
-      "schedule": "30 16 * * *"
+      "schedule": "30 17 * * *"
     }
   ]
 }
