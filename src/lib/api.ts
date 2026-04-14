@@ -18,7 +18,9 @@ export async function fetchJobs(): Promise<Job[]> {
       location: item.location || "Remote",
       role: item.role || "General",
       status: (item.status as JobStatus) || "Not Applied",
-      dateAdded: item.created_at ? new Date(item.created_at).toLocaleDateString() : new Date().toLocaleDateString(),
+      dateAdded: item.created_at 
+        ? new Date(item.created_at).toISOString().slice(0, 10)  // Always "yyyy-MM-dd"
+        : new Date().toISOString().slice(0, 10),
       link: item.apply_link || "#",
       isBookmarked: item.is_saved || false,
     }));

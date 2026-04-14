@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "main.py"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/scrape/run",
+      "schedule": "30 16 * * *"
+    }
+  ]
+}

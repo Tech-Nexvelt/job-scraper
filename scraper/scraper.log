@@ -590,3 +590,175 @@ Call log:
 2026-04-11 20:32:56,463 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
 2026-04-11 20:32:56,794 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
 2026-04-11 20:32:59,502 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-11 20:40:03,680 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-11 20:40:04,779 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-11 20:40:07,100 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:03:33,919 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?select=%2A&is_active=eq.True "HTTP/2 200 OK"
+2026-04-14 21:03:33,932 [INFO] job_scraper - Fetched 20 companies from Supabase.
+2026-04-14 21:03:49,451 [INFO] job_scraper - Scraping Microsoft (Provider: custom, Attempt: 1)
+2026-04-14 21:03:49,455 [INFO] job_scraper - Scraping Google (Provider: custom, Attempt: 1)
+2026-04-14 21:03:49,458 [INFO] job_scraper - Scraping Discord (Provider: greenhouse, Attempt: 1)
+2026-04-14 21:03:49,461 [INFO] job_scraper - Scraping Netflix (Provider: lever, Attempt: 1)
+2026-04-14 21:03:49,464 [INFO] job_scraper - Scraping NVIDIA (Provider: workday, Attempt: 1)
+2026-04-14 21:03:55,926 [ERROR] job_scraper - Error scraping Microsoft (Attempt 1): Page.goto: net::ERR_NETWORK_CHANGED at https://apply.careers.microsoft.com/careers?location=United%20States&location=United%20Kingdom&employmentType=Full-Time
+Call log:
+  - navigating to "https://apply.careers.microsoft.com/careers?location=United%20States&location=United%20Kingdom&employmentType=Full-Time", waiting until "networkidle"
+
+2026-04-14 21:03:55,927 [ERROR] scraper.providers.greenhouse - Error scraping Greenhouse for Discord: Page.goto: net::ERR_NETWORK_CHANGED at https://boards.greenhouse.io/discord
+Call log:
+  - navigating to "https://boards.greenhouse.io/discord", waiting until "networkidle"
+
+2026-04-14 21:03:55,931 [ERROR] scraper.providers.workday - Error scraping Workday for NVIDIA: Page.goto: net::ERR_NETWORK_CHANGED at https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
+Call log:
+  - navigating to "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite", waiting until "networkidle"
+
+2026-04-14 21:03:55,935 [ERROR] job_scraper - Error scraping Google (Attempt 1): Page.goto: net::ERR_NETWORK_CHANGED at https://www.google.com/about/careers/applications/jobs/results/?location=United%20States&location=United%20Kingdom&employment_type=FULL_TIME
+Call log:
+  - navigating to "https://www.google.com/about/careers/applications/jobs/results/?location=United%20States&location=United%20Kingdom&employment_type=FULL_TIME", waiting until "networkidle"
+
+2026-04-14 21:03:55,967 [WARNING] job_scraper - No jobs found for NVIDIA
+2026-04-14 21:03:55,967 [INFO] job_scraper - Scraping Salesforce (Provider: workday, Attempt: 1)
+2026-04-14 21:03:55,979 [WARNING] job_scraper - No jobs found for Discord
+2026-04-14 21:03:55,980 [INFO] job_scraper - Scraping Adobe (Provider: workday, Attempt: 1)
+2026-04-14 21:03:56,936 [INFO] job_scraper - Scraping Microsoft (Provider: custom, Attempt: 2)
+2026-04-14 21:03:56,943 [INFO] job_scraper - Scraping Google (Provider: custom, Attempt: 2)
+2026-04-14 21:04:16,665 [INFO] job_scraper - Successfully scraped 20 jobs from Adobe
+2026-04-14 21:04:16,666 [INFO] job_scraper - Scraping Intel (Provider: workday, Attempt: 1)
+2026-04-14 21:04:17,276 [INFO] job_scraper - Successfully scraped 20 jobs from Google
+2026-04-14 21:04:17,277 [INFO] job_scraper - Scraping DoorDash (Provider: greenhouse, Attempt: 1)
+2026-04-14 21:04:21,300 [INFO] job_scraper - Successfully scraped 20 jobs from Microsoft
+2026-04-14 21:04:21,301 [INFO] job_scraper - Scraping Airbnb (Provider: greenhouse, Attempt: 1)
+2026-04-14 21:04:28,533 [ERROR] scraper.providers.lever - Error scraping Lever for Netflix: Page.wait_for_selector: Timeout 20000ms exceeded.
+Call log:
+  - waiting for locator(".posting") to be visible
+
+2026-04-14 21:04:28,538 [WARNING] job_scraper - No jobs found for Netflix
+2026-04-14 21:04:28,538 [INFO] job_scraper - Scraping Barclays (Provider: workday, Attempt: 1)
+2026-04-14 21:04:29,791 [INFO] job_scraper - Successfully scraped 20 jobs from Intel
+2026-04-14 21:04:29,791 [INFO] job_scraper - Scraping Unilever (Provider: workday, Attempt: 1)
+2026-04-14 21:04:33,968 [ERROR] scraper.providers.workday - Error scraping Workday for Salesforce: Page.wait_for_selector: Timeout 20000ms exceeded.
+Call log:
+  - waiting for locator("[data-automation-id='jobTitle']") to be visible
+
+2026-04-14 21:04:33,974 [WARNING] job_scraper - No jobs found for Salesforce
+2026-04-14 21:04:33,974 [INFO] job_scraper - Scraping GSK (Provider: workday, Attempt: 1)
+2026-04-14 21:04:38,796 [ERROR] scraper.providers.greenhouse - Error scraping Greenhouse for DoorDash: Page.wait_for_selector: Timeout 20000ms exceeded.
+Call log:
+  - waiting for locator(".opening") to be visible
+
+2026-04-14 21:04:38,800 [WARNING] job_scraper - No jobs found for DoorDash
+2026-04-14 21:04:38,800 [INFO] job_scraper - Scraping Dropbox (Provider: greenhouse, Attempt: 1)
+2026-04-14 21:04:42,620 [ERROR] scraper.providers.workday - Error scraping Workday for Unilever: Page.goto: net::ERR_NETWORK_CHANGED at https://unilever.wd3.myworkdayjobs.com/ExternalCareerSite
+Call log:
+  - navigating to "https://unilever.wd3.myworkdayjobs.com/ExternalCareerSite", waiting until "networkidle"
+
+2026-04-14 21:04:42,627 [WARNING] job_scraper - No jobs found for Unilever
+2026-04-14 21:04:42,627 [INFO] job_scraper - Scraping Yelp (Provider: greenhouse, Attempt: 1)
+2026-04-14 21:04:42,632 [ERROR] scraper.providers.workday - Error scraping Workday for GSK: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://gsk.wd5.myworkdayjobs.com/GSKCareers
+Call log:
+  - navigating to "https://gsk.wd5.myworkdayjobs.com/GSKCareers", waiting until "networkidle"
+
+2026-04-14 21:04:42,638 [WARNING] job_scraper - No jobs found for GSK
+2026-04-14 21:04:42,638 [INFO] job_scraper - Scraping Figma (Provider: greenhouse, Attempt: 1)
+2026-04-14 21:04:43,873 [ERROR] scraper.providers.greenhouse - Error scraping Greenhouse for Airbnb: Page.wait_for_selector: Timeout 20000ms exceeded.
+Call log:
+  - waiting for locator(".opening") to be visible
+
+2026-04-14 21:04:43,887 [WARNING] job_scraper - No jobs found for Airbnb
+2026-04-14 21:04:43,887 [INFO] job_scraper - Scraping Github (Provider: greenhouse, Attempt: 1)
+2026-04-14 21:04:44,628 [ERROR] scraper.providers.greenhouse - Error scraping Greenhouse for Github: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://boards.greenhouse.io/github
+Call log:
+  - navigating to "https://boards.greenhouse.io/github", waiting until "networkidle"
+
+2026-04-14 21:04:44,632 [ERROR] scraper.providers.greenhouse - Error scraping Greenhouse for Yelp: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://boards.greenhouse.io/yelp
+Call log:
+  - navigating to "https://boards.greenhouse.io/yelp", waiting until "networkidle"
+
+2026-04-14 21:04:44,639 [ERROR] scraper.providers.greenhouse - Error scraping Greenhouse for Figma: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://boards.greenhouse.io/figma
+Call log:
+  - navigating to "https://boards.greenhouse.io/figma", waiting until "networkidle"
+
+2026-04-14 21:04:44,655 [WARNING] job_scraper - No jobs found for Yelp
+2026-04-14 21:04:44,657 [INFO] job_scraper - Scraping Atlassian (Provider: greenhouse, Attempt: 1)
+2026-04-14 21:04:44,665 [WARNING] job_scraper - No jobs found for Figma
+2026-04-14 21:04:44,667 [INFO] job_scraper - Scraping Spotify (Provider: lever, Attempt: 1)
+2026-04-14 21:04:44,682 [WARNING] job_scraper - No jobs found for Github
+2026-04-14 21:04:44,683 [INFO] job_scraper - Scraping Palantir (Provider: greenhouse, Attempt: 1)
+2026-04-14 21:04:44,820 [ERROR] scraper.providers.greenhouse - Error scraping Greenhouse for Atlassian: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://boards.greenhouse.io/atlassian
+Call log:
+  - navigating to "https://boards.greenhouse.io/atlassian", waiting until "networkidle"
+
+2026-04-14 21:04:44,831 [WARNING] job_scraper - No jobs found for Atlassian
+2026-04-14 21:04:44,849 [ERROR] scraper.providers.lever - Error scraping Lever for Spotify: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://jobs.lever.co/spotify
+Call log:
+  - navigating to "https://jobs.lever.co/spotify", waiting until "networkidle"
+
+2026-04-14 21:04:44,859 [WARNING] job_scraper - No jobs found for Spotify
+2026-04-14 21:04:44,875 [ERROR] scraper.providers.greenhouse - Error scraping Greenhouse for Palantir: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://boards.greenhouse.io/palantirtechnologies
+Call log:
+  - navigating to "https://boards.greenhouse.io/palantirtechnologies", waiting until "networkidle"
+
+2026-04-14 21:04:44,883 [WARNING] job_scraper - No jobs found for Palantir
+2026-04-14 21:05:08,158 [ERROR] scraper.providers.workday - Error scraping Workday for Barclays: Page.wait_for_selector: Timeout 20000ms exceeded.
+Call log:
+  - waiting for locator("[data-automation-id='jobTitle']") to be visible
+
+2026-04-14 21:05:08,163 [WARNING] job_scraper - No jobs found for Barclays
+2026-04-14 21:05:24,580 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:05:24,603 [ERROR] scraper.providers.greenhouse - Error scraping Greenhouse for Dropbox: Page.wait_for_selector: Timeout 20000ms exceeded.
+Call log:
+  - waiting for locator(".opening") to be visible
+
+2026-04-14 21:05:24,624 [WARNING] job_scraper - No jobs found for Dropbox
+2026-04-14 21:05:25,437 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=apply_link&apply_link=in.%28%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F109025007794823878-customer-engineer-iii-platform-sled-mountain-west-google-public-sector%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F139732305974305478-administrative-business-partner-platforms-and-devices-xr%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556827625%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F116703172369490630-data-center-facilities-technician-electrical%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556769508%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556768643%22%2C%22https%3A%2F%2Fadobe.wd5.myworkdayjobs.com%2Fexternal_experienced%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556744800%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F127561949205406406-administrative-business-partner-aci%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556856907%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F106098657597498054-associate-data-center-facilities-technician%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F109653859726435014-administrative-business-partner-global-clients-and-agency-solutions%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556852036%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F130465072219595462-digital-sales-representative-google-public-sector%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F124132776449319622-strategy-and-operations-lead%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556820737%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F72319049052103366-administrative-business-partner-investor-relations%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F100194608721339078-global-process-owner-specialist-external-hiring-process-fixedterm-contract%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556650749%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F123567835778556614-strategy-and-operations-principal-lead-xr-and-tv%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556769499%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F142700168641159878-administrative-business-partner-iii%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F87563571612787398-data-center-facilities-technician-mechanical%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556858378%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556638928%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556804021%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F132196047119098566-administrative-business-partner-data-cloud%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F129581614626677446-video-lead-youtube-sales-and-solutions%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556748026%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F140042162094908102-manager-supply-planning-program-management%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F129223036397068998-administrative-business-partner-corporate-engineering%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556751840%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556647801%22%2C%22https%3A%2F%2Fintel.wd1.myworkdayjobs.com%2FExternal%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556622008%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556624809%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F138115886442521286-facilities-manager-i-data-center-operations%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F112844436311810758-customer-engineer-iii-platform-google-cloud%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556804077%22%2C%22https%3A%2F%2Fapply.careers.microsoft.com%2Fcareers%2Fjob%2F1970393556769501%22%2C%22https%3A%2F%2Fwww.google.com%2Fabout%2Fcareers%2Fapplications%2Fjobs%2Fresults%2F80140768613671622-data-center-facilities-technician-mechanical%3Flocation%3DUnited%2520States%26location%3DUnited%2520Kingdom%26employment_type%3DFULL_TIME%22%29 "HTTP/2 200 OK"
+2026-04-14 21:05:25,442 [INFO] scraper.deduplicator - Deduplication: Found 2 existing jobs in database.
+2026-04-14 21:05:25,442 [INFO] scraper.deduplicator - Deduplication complete: 39 new out of 80 total scraped.
+2026-04-14 21:05:25,901 [INFO] httpx - HTTP Request: POST https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?columns=%22location%22%2C%22company%22%2C%22last_scraped_at%22%2C%22apply_link%22%2C%22role%22%2C%22source%22%2C%22job_title%22 "HTTP/2 201 Created"
+2026-04-14 21:05:25,905 [INFO] job_scraper - Inserted 39 new jobs into Supabase.
+2026-04-14 21:05:26,232 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.16d34c9e-3e15-41a8-86c0-d3d3530895c2 "HTTP/2 200 OK"
+2026-04-14 21:05:26,531 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.5ceb13a3-265d-4d9f-a395-3c7f96aefd55 "HTTP/2 200 OK"
+2026-04-14 21:05:26,842 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.274c2991-df75-45ff-9419-e37618edcfae "HTTP/2 200 OK"
+2026-04-14 21:05:27,298 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.0fbd0b67-7085-4ff3-a85e-aedc65ee84cc "HTTP/2 200 OK"
+2026-04-14 21:05:27,707 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.7f106e97-43fb-4f42-945a-b8c0361c36a3 "HTTP/2 200 OK"
+2026-04-14 21:05:28,520 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.6f0665b7-4b21-411c-a5d3-7ab8bd85126b "HTTP/2 200 OK"
+2026-04-14 21:05:28,915 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.4e951b77-2696-43e2-8473-c1622b908870 "HTTP/2 200 OK"
+2026-04-14 21:05:29,242 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.21626129-1241-4134-97f2-aeabea76195d "HTTP/2 200 OK"
+2026-04-14 21:05:29,578 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.b41be5a3-ad63-4de7-bdf9-3b9e080071d6 "HTTP/2 200 OK"
+2026-04-14 21:05:29,976 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.aceb14e9-ce4e-4eeb-a270-797a2ee6db69 "HTTP/2 200 OK"
+2026-04-14 21:05:30,362 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.1613c50b-3376-4ccb-9cf0-0051cea2763a "HTTP/2 200 OK"
+2026-04-14 21:05:30,669 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.bf30f232-3981-4e7a-bc98-ede43c2800eb "HTTP/2 200 OK"
+2026-04-14 21:05:30,994 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.5b5467c6-642a-4eef-8d20-39baab97b221 "HTTP/2 200 OK"
+2026-04-14 21:05:31,370 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.decbfcb0-8127-46ed-9ba8-440f012d347c "HTTP/2 200 OK"
+2026-04-14 21:05:31,681 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.4ab19f0a-a394-4b62-8c12-4397147904ba "HTTP/2 200 OK"
+2026-04-14 21:05:31,974 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.bbdc9f1f-18c4-444a-96e0-e2a7e3e5d91c "HTTP/2 200 OK"
+2026-04-14 21:05:32,263 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.eef4fefa-6543-4575-a00c-f5163f085e42 "HTTP/2 200 OK"
+2026-04-14 21:05:32,567 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.e85888a8-d8f0-412c-935d-49e6d03d9f35 "HTTP/2 200 OK"
+2026-04-14 21:05:32,871 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.edd268fb-b8a1-48d9-b365-116d0e41f5aa "HTTP/2 200 OK"
+2026-04-14 21:05:33,192 [INFO] httpx - HTTP Request: PATCH https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/companies?id=eq.bdad05c2-7e9e-4602-a120-b6e7a2255c4d "HTTP/2 200 OK"
+2026-04-14 21:05:33,194 [INFO] job_scraper - Updated last_scraped_at for all companies in Supabase.
+2026-04-14 21:05:36,922 [INFO] scraper.notifier - Scraping alert email sent to 22211A1121@gmail.com
+2026-04-14 21:05:36,922 [INFO] job_scraper - Scraping session finished in 122.99s. Total New Jobs: 39
+2026-04-14 21:05:37,280 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:05:37,700 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:05:50,268 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:05:50,683 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:05:52,904 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:05:53,248 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:09:59,096 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:09:59,794 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:12:21,516 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:16:34,299 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:17:54,154 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:17:56,778 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:17:59,205 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:21:47,146 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:21:47,502 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:22:07,789 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:28:22,161 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:28:23,663 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:28:24,047 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:32:03,731 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:32:06,929 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:32:07,329 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:33:20,182 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"
+2026-04-14 21:33:43,997 [INFO] httpx - HTTP Request: GET https://sszmpsmvitkaersitaqh.supabase.co/rest/v1/jobs?select=%2A&order=created_at.desc "HTTP/2 200 OK"

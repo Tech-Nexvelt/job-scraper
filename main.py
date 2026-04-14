@@ -67,8 +67,10 @@ async def root():
 async def trigger_scrape(background_tasks: BackgroundTasks):
     """
     Triggers the scraper to run in the background.
+    Compatible with Vercel Cron or GitHub Actions.
     """
-    background_tasks.add_task(asyncio.run, run_scraper())
+    # Simply add the coroutine to background tasks
+    background_tasks.add_task(run_scraper)
     return {"status": "Scraping started in background"}
 
 class StatusRequest(BaseModel):
