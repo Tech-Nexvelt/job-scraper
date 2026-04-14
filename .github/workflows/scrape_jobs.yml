@@ -3,8 +3,8 @@ name: Daily Job Scrape
 
 on:
   schedule:
-    # Runs at 16:30 UTC which is 10:00 PM IST
-    - cron: '30 16 * * *'
+    # Runs at 16:35 UTC which is 10:05 PM IST
+    - cron: '35 16 * * *'
   workflow_dispatch: # Allows manual triggering from GitHub UI
 
 jobs:
