@@ -14,6 +14,7 @@ import { DatePicker } from "@/components/DatePicker"
 import { format, parseISO, subDays } from "date-fns"
 import { Calendar as CalendarIcon, History } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 
 function JobsContent() {
   const { jobs, isLoading, toggleBookmark, updateStatus } = useJobs()
