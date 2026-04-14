@@ -16,7 +16,6 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { ScraperButton } from "./ScraperButton"
 
 const menuItems = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
@@ -84,10 +83,6 @@ export function Sidebar() {
           )
         })}
       </nav>
-
-      <div className="border-t py-2">
-        <ScraperButton isCollapsed={isCollapsed} />
-      </div>
 
       <div className="border-t p-4">
          <Link

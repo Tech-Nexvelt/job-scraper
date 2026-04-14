@@ -62,39 +62,18 @@ async def analyze_resume(request: AnalysisRequest):
 import os
 import httpx
 
+@app.get("/")
+async def root():
+    return {"message": "Job Tracker API is running"}
+
 @app.post("/scrape/run")
-async def trigger_gh_action():
+async def trigger_scrape(background_tasks: BackgroundTasks):
     """
-    Triggers the scraper via GitHub Actions workflow dispatch.
-    This provides 'Remote Control' from the dashboard.
+    Triggers the scraper to run in the background.
+    Compatible with Vercel Cron.
     """
-    token = os.environ.get("EXTERNAL_GITHUB_TOKEN")
-    if not token:
-        return {"error": "EXTERNAL_GITHUB_TOKEN not configured in Vercel"}
-
-    # GitHub API details
-    owner = "Kishore20L"
-    repo = "Job-Scraper"
-    workflow_id = "scrape_jobs.yml"
-    url = f"https://api.github.com/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches"
-
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28"
-    }
-    
-    data = {"ref": "main"}
-
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.post(url, headers=headers, json=data)
-            if response.status_code == 204:
-                return {"status": "success", "message": "High-volume scraper triggered on GitHub Actions!"}
-            else:
-                return {"status": "error", "message": f"GitHub API error: {response.status_code}", "detail": response.text}
-        except Exception as e:
-            return {"status": "error", "message": str(e)}
+    background_tasks.add_task(run_scraper)
+    return {"status": "Scraping started in background"}
 
 class StatusRequest(BaseModel):
     status: str
