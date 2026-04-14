@@ -15,13 +15,19 @@ async def scrape_lever(company: Dict, page: Page) -> List[Dict]:
     jobs = []
     
     try:
-        await page.goto(url, wait_until="networkidle", timeout=60000)
-        await page.wait_for_selector(".posting", timeout=20000)
+        # domcontentloaded is faster and more reliable than networkidle
+        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        
+        # Lever is usually fast, but let's give it a 3s buffer
+        await page.wait_for_timeout(3000)
+        
+        # Increased timeout for CI environments
+        await page.wait_for_selector(".posting", timeout=30000)
         
         postings = await page.query_selector_all(".posting")
         for posting in postings[:max_jobs]:
             title_el = await posting.query_selector("h5")
-            title = await title_el.text_content() if title_el else ""
+            title = await title_el.inner_text() if title_el else ""
             
             link_el = await posting.query_selector("a.posting-title")
             href = await link_el.get_attribute("href") if link_el else ""

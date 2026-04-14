@@ -15,16 +15,16 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
     jobs = []
     
     # Navigate to URL
-    await page.goto(url, wait_until="networkidle", timeout=60000)
+    await page.goto(url, wait_until="domcontentloaded", timeout=60000)
     await page.wait_for_timeout(5000)
     
     if "microsoft" in name.lower():
         try:
-            await page.wait_for_selector("a[id^='job-card-']", timeout=20000)
+            await page.wait_for_selector("a[id^='job-card-']", timeout=40000)
             cards = await page.query_selector_all("a[id^='job-card-']")
             for card in cards[:max_jobs]:
                 title_el = await card.query_selector("div[class*='job-title']")
-                title = await title_el.text_content() if title_el else await card.get_attribute("aria-label")
+                title = await title_el.inner_text() if title_el else await card.get_attribute("aria-label")
                 if title and "view job:" in title.lower():
                     title = title.lower().replace("view job:", "").strip().title()
                 
@@ -49,7 +49,7 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
 
     elif "google" in name.lower():
         try:
-            await page.wait_for_selector("a[aria-label^='Learn more about']", timeout=20000)
+            await page.wait_for_selector("a[aria-label^='Learn more about']", timeout=40000)
             cards = await page.query_selector_all("a[aria-label^='Learn more about']")
             for card in cards[:max_jobs]:
                 title = await card.get_attribute("aria-label")
@@ -59,7 +59,6 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
                 href = await card.get_attribute("href")
                 full_link = f"https://www.google.com/about/careers/applications/{href}" if href and not href.startswith("http") else href
                 
-                loc_el = await card.query_selector("span[itemprop='addressLocality']")
                 # Prioritize static location from config
                 location = company.get("location", "USA")
                 
@@ -81,7 +80,7 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
         try:
             found_elements = await page.query_selector_all("h1, h2, h3, h4")
             for el in found_elements[:max_jobs]:
-                title = await el.text_content()
+                title = await el.inner_text()
                 if title and len(title.strip()) > 5 and "page not found" not in title.lower():
                     jobs.append({
                         "job_title": title.strip(),

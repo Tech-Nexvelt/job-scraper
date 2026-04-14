@@ -15,21 +15,31 @@ async def scrape_greenhouse(company: Dict, page: Page) -> List[Dict]:
     jobs = []
     
     try:
-        await page.goto(url, wait_until="networkidle", timeout=60000)
-        # Greenhouse boards often load dynamic content or are static
-        # Let's wait for common greenhouse elements
-        await page.wait_for_selector(".opening", timeout=20000)
+        # domcontentloaded is faster and more reliable than networkidle for career pages
+        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        
+        # Give a moment for initial scripts to run
+        await page.wait_for_timeout(3000)
+        
+        # Scroll to bottom to trigger lazy loading
+        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        await page.wait_for_timeout(2000)
+        
+        # Increased timeout for CI environments
+        await page.wait_for_selector(".opening", timeout=45000)
         
         cards = await page.query_selector_all(".opening")
         for card in cards[:max_jobs]:
             link_el = await card.query_selector("a")
-            title = await link_el.text_content() if link_el else ""
+            # Get text content while filtering out extra whitespace
+            title = await link_el.inner_text() if link_el else ""
             href = await link_el.get_attribute("href") if link_el else ""
             
             # Use static location from config
             location = company.get("location", "USA")
             
             if title and href:
+                # Handle relative links
                 full_link = href if href.startswith("http") else f"https://boards.greenhouse.io{href}"
                 jobs.append({
                     "job_title": title.strip(),
