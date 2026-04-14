@@ -11,6 +11,8 @@ from scraper.providers.greenhouse import scrape_greenhouse
 from scraper.providers.lever import scrape_lever
 from scraper.providers.workday import scrape_workday
 from scraper.providers.custom import scrape_custom
+from scraper.providers.dice import scrape_dice
+from scraper.providers.linkedin import scrape_linkedin
 
 from scraper.role_classifier import classify_role
 from scraper.deduplicator import filter_new_jobs
@@ -31,25 +33,37 @@ logger = logging.getLogger("job_scraper")
 
 COMPANIES_PATH = Path(__file__).parent / "companies.json"
 
+# Search Keywords for Global Boards
+KEYWORDS = [
+    "Software Engineer",
+    "Fullstack Developer",
+    "Frontend Developer", 
+    "Backend Developer",
+    "DevOps Engineer"
+]
+
 # Concurrency limit
 SEMAPHORE = asyncio.Semaphore(5)
 
 async def scrape_wrapper(company: Dict, browser_context) -> List[Dict]:
     """
-    Wrapper to handle individual company scraping with retries and provider detection.
+    Wrapper to handle individual company or global board scraping.
     """
     name = company["name"]
     provider = company.get("provider", "custom")
-    url = company["careers_url"]
+    url = company.get("careers_url", "")
     
     async with SEMAPHORE:
-        for attempt in range(3): # Max 2 retries (3 attempts total)
+        for attempt in range(2): # 2 attempts total
             try:
-                logger.info(f"Scraping {name} (Provider: {provider}, Attempt: {attempt + 1})")
                 page = await browser_context.new_page()
                 
                 jobs = []
-                if provider == "greenhouse":
+                if provider == "dice":
+                    jobs = await scrape_dice(KEYWORDS, page)
+                elif provider == "linkedin":
+                    jobs = await scrape_linkedin(KEYWORDS, page)
+                elif provider == "greenhouse":
                     jobs = await scrape_greenhouse(company, page)
                 elif provider == "lever":
                     jobs = await scrape_lever(company, page)
@@ -68,10 +82,9 @@ async def scrape_wrapper(company: Dict, browser_context) -> List[Dict]:
                 return jobs
             except Exception as e:
                 logger.error(f"Error scraping {name} (Attempt {attempt + 1}): {str(e)}")
-                if attempt < 2:
-                    await asyncio.sleep(2 ** attempt) # Exponential backoff
+                if attempt < 1:
+                    await asyncio.sleep(5)
                 else:
-                    logger.error(f"Failed to scrape {name} after 3 attempts.")
                     return []
     return []
 

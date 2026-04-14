@@ -1,5 +1,15 @@
 [
   {
+    "name": "LinkedIn USA (On-site)",
+    "provider": "linkedin",
+    "location": "USA"
+  },
+  {
+    "name": "Dice USA (On-site)",
+    "provider": "dice",
+    "location": "USA"
+  },
+  {
     "name": "Microsoft",
     "careers_url": "https://apply.careers.microsoft.com/careers?location=United%20States&location=United%20Kingdom&employmentType=Full-Time",
     "provider": "custom",
