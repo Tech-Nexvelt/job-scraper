@@ -91,6 +91,77 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
         except Exception as e:
             logger.error(f"Error scraping Google: {e}")
 
+    elif "amazon" in name.lower():
+        try:
+            await page.wait_for_selector("h3.job-title", timeout=40000)
+            cards = await page.query_selector_all("div.job")
+            for card in cards:
+                title_el = await card.query_selector("h3.job-title")
+                title = await title_el.inner_text() if title_el else ""
+                
+                link_el = await card.query_selector("a.job-link")
+                href = await link_el.get_attribute("href") if link_el else ""
+                full_link = f"https://www.amazon.jobs{href}" if href and href.startswith("/") else href
+                
+                if title and "remote" not in title.lower():
+                    jobs.append({
+                        "job_title": title.strip(),
+                        "company": name,
+                        "location": company.get("location", "USA"),
+                        "apply_link": full_link,
+                        "description": f"Position at Amazon",
+                        "date_posted": "Recent",
+                        "source": "company_career_page"
+                    })
+        except Exception as e:
+            logger.error(f"Error scraping Amazon: {e}")
+
+    elif "apple" in name.lower():
+        try:
+            await page.wait_for_selector("a.table--column__link", timeout=40000)
+            cards = await page.query_selector_all("tr.table-row")
+            for card in cards:
+                title_el = await card.query_selector("a.table--column__link")
+                title = await title_el.inner_text() if title_el else ""
+                href = await title_el.get_attribute("href") if title_el else ""
+                full_link = f"https://jobs.apple.com{href}" if href and href.startswith("/") else href
+                
+                if title and "remote" not in title.lower():
+                    jobs.append({
+                        "job_title": title.strip(),
+                        "company": name,
+                        "location": company.get("location", "USA"),
+                        "apply_link": full_link,
+                        "description": f"Position at Apple",
+                        "date_posted": "Recent",
+                        "source": "company_career_page"
+                    })
+        except Exception as e:
+            logger.error(f"Error scraping Apple: {e}")
+
+    elif "exxonmobil" in name.lower() or "jobs.exxonmobil.com" in url:
+        try:
+            await page.wait_for_selector("a.jobTitle-link", timeout=40000)
+            cards = await page.query_selector_all("tr.job-tile")
+            for card in cards:
+                title_el = await card.query_selector("a.jobTitle-link")
+                title = await title_el.inner_text() if title_el else ""
+                href = await title_el.get_attribute("href") if title_el else ""
+                full_link = f"https://jobs.exxonmobil.com{href}" if href and href.startswith("/") else href
+                
+                if title:
+                    jobs.append({
+                        "job_title": title.strip(),
+                        "company": name,
+                        "location": company.get("location", "USA"),
+                        "apply_link": full_link,
+                        "description": f"Position at ExxonMobil",
+                        "date_posted": "Recent",
+                        "source": "company_career_page"
+                    })
+        except Exception as e:
+            logger.error(f"Error scraping ExxonMobil: {e}")
+
     # Generic fallback
     if not jobs:
         try:

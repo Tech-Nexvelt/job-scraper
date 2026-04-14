@@ -1,5 +1,77 @@
 [
   {
+    "name": "Walmart",
+    "careers_url": "https://walmart.wd5.myworkdayjobs.com/WalmartExternal",
+    "provider": "workday",
+    "location": "USA"
+  },
+  {
+    "name": "Amazon",
+    "careers_url": "https://www.amazon.jobs/en/search?base_query=software+engineer&location%5B%5D=USA",
+    "provider": "custom",
+    "location": "USA"
+  },
+  {
+    "name": "Apple",
+    "careers_url": "https://jobs.apple.com/en-us/search?search=software%20engineer&location=united-states-USA",
+    "provider": "custom",
+    "location": "USA"
+  },
+  {
+    "name": "UnitedHealth Group",
+    "careers_url": "https://uhg.wd1.myworkdayjobs.com/External_Careers",
+    "provider": "workday",
+    "location": "USA"
+  },
+  {
+    "name": "CVS Health",
+    "careers_url": "https://cvshealth.wd1.myworkdayjobs.com/CVS_Health_Careers",
+    "provider": "workday",
+    "location": "USA"
+  },
+  {
+    "name": "Geico",
+    "careers_url": "https://geico.wd1.myworkdayjobs.com/External",
+    "provider": "workday",
+    "location": "USA"
+  },
+  {
+    "name": "McKesson",
+    "careers_url": "https://mckesson.wd3.myworkdayjobs.com/External_Career_Site",
+    "provider": "workday",
+    "location": "USA"
+  },
+  {
+    "name": "ExxonMobil",
+    "careers_url": "https://jobs.exxonmobil.com/search/?q=software+engineer",
+    "provider": "custom",
+    "location": "USA"
+  },
+  {
+    "name": "Home Depot",
+    "careers_url": "https://homedepot.wd5.myworkdayjobs.com/Roles",
+    "provider": "workday",
+    "location": "USA"
+  },
+  {
+    "name": "Wells Fargo",
+    "careers_url": "https://wellsfargo.wd1.myworkdayjobs.com/WellsFargoCareers",
+    "provider": "workday",
+    "location": "USA"
+  },
+  {
+    "name": "Verizon",
+    "careers_url": "https://www.verizon.com/about/work/jobs/search?q=Software+Engineer&location=USA",
+    "provider": "custom",
+    "location": "USA"
+  },
+  {
+    "name": "J.P. Morgan Chase",
+    "careers_url": "https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001",
+    "provider": "custom",
+    "location": "USA"
+  },
+  {
     "name": "LinkedIn USA (On-site)",
     "provider": "linkedin",
     "location": "USA"
