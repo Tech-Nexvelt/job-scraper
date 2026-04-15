@@ -93,7 +93,7 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
 
     elif "amazon" in name.lower():
         try:
-            await page.wait_for_selector("h3.job-title", timeout=40000)
+            await page.wait_for_selector("h3.job-title", timeout=90000)
             cards = await page.query_selector_all("div.job")
             for card in cards:
                 title_el = await card.query_selector("h3.job-title")
@@ -118,7 +118,7 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
 
     elif "apple" in name.lower():
         try:
-            await page.wait_for_selector("a.table--column__link", timeout=40000)
+            await page.wait_for_selector("a.table--column__link", timeout=90000)
             cards = await page.query_selector_all("tr.table-row")
             for card in cards:
                 title_el = await card.query_selector("a.table--column__link")
@@ -141,7 +141,7 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
 
     elif "exxonmobil" in name.lower() or "jobs.exxonmobil.com" in url:
         try:
-            await page.wait_for_selector("a.jobTitle-link", timeout=40000)
+            await page.wait_for_selector("a.jobTitle-link", timeout=90000)
             cards = await page.query_selector_all("tr.job-tile")
             for card in cards:
                 title_el = await card.query_selector("a.jobTitle-link")

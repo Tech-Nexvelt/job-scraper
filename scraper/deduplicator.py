@@ -17,13 +17,19 @@ def filter_new_jobs(jobs: List[Dict]) -> List[Dict]:
     if not current_links:
         return jobs
 
+    # 2. Query Supabase for all links that ALREADY exist in the DB in batches
+    # PostgREST (Supabase) has URL length limits; chunking avoids "query too long" errors.
+    existing_links = set()
+    CHUNK_SIZE = 100 
+    
     try:
-        # 2. Query Supabase for all links that ALREADY exist in the DB
-        # We use .in_() to check the whole batch at once
-        result = supabase.table("jobs").select("apply_link").in_("apply_link", current_links).execute()
-        existing_links = {r["apply_link"] for r in result.data}
+        for i in range(0, len(current_links), CHUNK_SIZE):
+            chunk = current_links[i:i + CHUNK_SIZE]
+            result = supabase.table("jobs").select("apply_link").in_("apply_link", chunk).execute()
+            if result.data:
+                existing_links.update(r["apply_link"] for r in result.data)
         
-        logger.info(f"Deduplication: Found {len(existing_links)} existing jobs in database.")
+        logger.info(f"Deduplication: Found {len(existing_links)} existing jobs in database out of {len(current_links)} candidates.")
 
         # 3. Filter current batch to only include truly NEW jobs
         new_jobs = []
@@ -42,5 +48,5 @@ def filter_new_jobs(jobs: List[Dict]) -> List[Dict]:
 
     except Exception as e:
         logger.error(f"Batch deduplication failed: {str(e)}. Falling back to slow check.")
-        # Fallback to a safer approach if the IN query is too large or fails
+        # Fallback to returning input if check fails, but insert will handle duplicates via unique constraint
         return jobs

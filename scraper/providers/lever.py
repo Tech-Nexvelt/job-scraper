@@ -21,8 +21,8 @@ async def scrape_lever(company: Dict, page: Page) -> List[Dict]:
         # Lever is usually fast, but let's give it a 3s buffer
         await page.wait_for_timeout(3000)
         
-        # Increased timeout for CI environments
-        await page.wait_for_selector(".posting", timeout=30000)
+        # Increased timeout to 90s for CI environments
+        await page.wait_for_selector(".posting", timeout=90000)
         
         postings = await page.query_selector_all(".posting")
         for posting in postings:

@@ -19,16 +19,18 @@ async def scrape_workday(company: Dict, page: Page) -> List[Dict]:
         await page.goto(url, wait_until="domcontentloaded", timeout=60000)
         
         # Workday takes significant time to render the dynamic list
-        await page.wait_for_timeout(8000)
+        await page.wait_for_timeout(12000)
         
         # Increased timeout and added retry for the main selector
         selector = "[data-automation-id='jobTitle']"
         try:
-            await page.wait_for_selector(selector, timeout=60000)
+            # "Take as much as time to get jobs" - Increased to 90s
+            await page.wait_for_selector(selector, timeout=90000)
         except Exception:
             # Try a broader selector if specifically tagged one fails
             logger.warning(f"Secondary selector check for {name}")
-            await page.wait_for_selector("li[data-automation-id='jobPosting']", timeout=20000)
+            # Increased to 40s for secondary check
+            await page.wait_for_selector("li[data-automation-id='jobPosting']", timeout=40000)
             selector = "li[data-automation-id='jobPosting']"
             
         # Extract titles and links

@@ -33,14 +33,18 @@ logger = logging.getLogger("job_scraper")
 
 COMPANIES_PATH = Path(__file__).parent / "companies.json"
 
-# Search Keywords for Global Boards
-KEYWORDS = [
-    "Software Engineer",
-    "Fullstack Developer",
-    "Frontend Developer", 
-    "Backend Developer",
-    "DevOps Engineer"
-]
+# Comprehensive Search Keywords across all required domains
+DOMAIN_KEYWORDS = {
+    "Data": ["Data Analyst", "Data Engineer", "Data Scientist", "Business Intelligence", "Analytics"],
+    "Software": ["Software Engineer", "Fullstack Developer", "Frontend Developer", "Backend Developer", "DevOps Engineer"],
+    "Business": ["Business Analyst", "Financial Analyst", "CRM Manager", "Credit Risk"],
+    "Healthcare": ["Biomedical Engineer", "Clinical Research", "Clinical Data Analyst", "Healthcare"],
+    "Engineering": ["Electrical Engineer", "Mechanical Engineer", "Civil Engineer", "Chemical Engineer"],
+    "Security": ["Cybersecurity Analyst", "Information Security", "AML Investigator", "Security Engineer"]
+}
+
+# Flat list of all keywords for global scrapers
+KEYWORDS = [kw for sublist in DOMAIN_KEYWORDS.values() for kw in sublist]
 
 # Concurrency limit
 SEMAPHORE = asyncio.Semaphore(5)
@@ -150,9 +154,9 @@ async def run() -> int:
     # Insert into Supabase
     if new_jobs:
         try:
-            data_to_insert = []
+            data_to_upsert = []
             for j in new_jobs:
-                data_to_insert.append({
+                data_to_upsert.append({
                     "job_title": j["job_title"],
                     "company": j["company"],
                     "location": j["location"],
@@ -165,14 +169,23 @@ async def run() -> int:
 
             # Chunk insertion for reliability
             CHUNK_SIZE = 50
-            for i in range(0, len(data_to_insert), CHUNK_SIZE):
-                chunk = data_to_insert[i:i + CHUNK_SIZE]
-                supabase.table("jobs").insert(chunk).execute()
+            success_count = 0
+            for i in range(0, len(data_to_upsert), CHUNK_SIZE):
+                chunk = data_to_upsert[i:i + CHUNK_SIZE]
+                try:
+                    # Use upsert with on_conflict to handle existing links gracefully
+                    supabase.table("jobs").upsert(
+                        chunk, 
+                        on_conflict="apply_link"
+                    ).execute()
+                    success_count += len(chunk)
+                except Exception as chunk_e:
+                    logger.error(f"Failed to upsert chunk {i}: {str(chunk_e)}")
             
-            total_inserted = len(data_to_insert)
-            logger.info(f"Inserted {total_inserted} new jobs into Supabase.")
+            total_inserted = success_count
+            logger.info(f"Upserted {total_inserted} jobs into Supabase.")
         except Exception as e:
-            logger.error(f"Failed to insert jobs into Supabase: {str(e)}")
+            logger.error(f"Failed to process jobs for Supabase: {str(e)}")
 
     # Update last_scraped_at
     try:
@@ -196,12 +209,27 @@ async def run() -> int:
     except Exception as e:
         logger.error(f"Failed to update companies: {str(e)}")
 
+    # Calculate domain summary
+    domain_counts = {domain: 0 for domain in DOMAIN_KEYWORDS.keys()}
+    domain_counts["Other"] = 0
+    for job in enriched_jobs:
+        domain_counts[job["domain"]] = domain_counts.get(job["domain"], 0) + 1
+    
+    logger.info("--- Domain Coverage Summary ---")
+    for domain, count in domain_counts.items():
+        status = "✅ PASS" if count >= 20 else "⚠️ FAIL (Under 20)"
+        logger.info(f"{domain}: {count} jobs found - {status}")
+    logger.info("-------------------------------")
+
     # Send email alert (always send to confirm status)
     send_scraping_alert(total_inserted)
 
     end_time = datetime.now()
     duration = (end_time - start_time).total_seconds()
-    logger.info(f"Scraping session finished in {duration:.2f}s. Total New Jobs: {total_inserted}")
+    
+    summary_msg = f"Scraping session finished in {duration:.2f}s. Total New Jobs: {total_inserted}. "
+    summary_msg += " | ".join([f"{d}: {c}" for d, c in domain_counts.items() if c > 0])
+    logger.info(summary_msg)
     
     return total_inserted
 

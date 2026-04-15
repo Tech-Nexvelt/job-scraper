@@ -131,8 +131,8 @@
   },
   {
     "name": "DoorDash",
-    "careers_url": "https://boards.greenhouse.io/doordash",
-    "provider": "greenhouse",
+    "careers_url": "https://careers.doordash.com/open-roles",
+    "provider": "custom",
     "location": "USA"
   },
   {
@@ -167,8 +167,8 @@
   },
   {
     "name": "Yelp",
-    "careers_url": "https://boards.greenhouse.io/yelp",
-    "provider": "greenhouse",
+    "careers_url": "https://www.yelp.careers/us/en/search-results",
+    "provider": "custom",
     "location": "USA"
   },
   {
@@ -179,14 +179,14 @@
   },
   {
     "name": "Github",
-    "careers_url": "https://boards.greenhouse.io/github",
-    "provider": "greenhouse",
+    "careers_url": "https://github.careers/careers-home/jobs",
+    "provider": "custom",
     "location": "USA"
   },
   {
     "name": "Atlassian",
-    "careers_url": "https://boards.greenhouse.io/atlassian",
-    "provider": "greenhouse",
+    "careers_url": "https://www.atlassian.com/company/careers/all-jobs",
+    "provider": "custom",
     "location": "USA/Global"
   },
   {

@@ -21,8 +21,8 @@ async def scrape_dice(keywords: List[str], page: Page) -> List[Dict]:
         encoded_keyword = urllib.parse.quote(keyword)
         base_url = f"https://www.dice.com/jobs?q={encoded_keyword}&location=USA&filters.workSetting=On%20Site&filters.employmentType=Full%20Time"
         
-        # Scrape up to 5 pages per keyword to respect CI time limits and avoid bans
-        for page_num in range(1, 6):
+        # Scrape up to 10 pages per keyword to ensure we reach the 20-job minimum
+        for page_num in range(1, 11):
             url = f"{base_url}&page={page_num}"
             try:
                 logger.info(f"Dice: Fetching page {page_num} for {keyword}")
@@ -30,8 +30,8 @@ async def scrape_dice(keywords: List[str], page: Page) -> List[Dict]:
                 await page.wait_for_timeout(5000) # Give it time to render the cards
                 
                 # Dice job cards use d-card or similar
-                # We wait for the results list
-                await page.wait_for_selector("d-card", timeout=30000)
+                # We wait for the results list - increased to 90s
+                await page.wait_for_selector("d-card", timeout=90000)
                 
                 cards = await page.query_selector_all("d-card")
                 if not cards:

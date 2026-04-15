@@ -20,9 +20,8 @@ async def scrape_linkedin(keywords: List[str], page: Page) -> List[Dict]:
         # f_WT=1 (On-site), f_JT=F (Full-time)
         base_url = f"https://www.linkedin.com/jobs/search?keywords={encoded_keyword}&location=United%20States&f_WT=1&f_JT=F"
         
-        # LinkedIn uses 'start' parameter for pagination (25 results per page)
-        # We'll scrape up to 4 pages (100 jobs) per keyword to stay safe
-        for page_num in range(0, 4):
+        # Scrape up to 10 pages (250 jobs) per keyword to meet the 20-jobs-per-role quota
+        for page_num in range(0, 10):
             start = page_num * 25
             url = f"{base_url}&start={start}"
             
