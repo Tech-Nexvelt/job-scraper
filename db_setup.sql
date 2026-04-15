@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS jobs (
   company TEXT NOT NULL,
   location TEXT,
   role TEXT,
+  domain TEXT,
   apply_link TEXT UNIQUE,
   source TEXT DEFAULT 'company_career_page',
   status TEXT DEFAULT 'Not Applied',

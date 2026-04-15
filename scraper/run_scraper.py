@@ -14,7 +14,7 @@ from scraper.providers.custom import scrape_custom
 from scraper.providers.dice import scrape_dice
 from scraper.providers.linkedin import scrape_linkedin
 
-from scraper.role_classifier import classify_role
+from scraper.role_classifier import classify_role, get_domain
 from scraper.deduplicator import filter_new_jobs
 from scraper.supabase_client import supabase
 from scraper.notifier import send_scraping_alert
@@ -140,6 +140,7 @@ async def run() -> int:
     enriched_jobs = []
     for job in all_raw_jobs:
         job["role"] = classify_role(job["job_title"], job.get("description", ""))
+        job["domain"] = get_domain(job["job_title"])
         job["last_scraped_at"] = datetime.now(timezone.utc).isoformat()
         enriched_jobs.append(job)
 
@@ -156,6 +157,7 @@ async def run() -> int:
                     "company": j["company"],
                     "location": j["location"],
                     "role": j["role"],
+                    "domain": j["domain"],
                     "apply_link": j["apply_link"],
                     "source": j.get("source", "company_career_page"),
                     "last_scraped_at": j["last_scraped_at"]
