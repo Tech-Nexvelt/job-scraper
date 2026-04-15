@@ -5,9 +5,6 @@ on:
   schedule:
     # Multiple triggers to ensure reliability if GitHub delays one
     - cron: '30 17 * * *' # 11:00 PM IST
-    - cron: '45 17 * * *' # 11:15 PM IST
-    - cron: '00 18 * * *' # 11:30 PM IST
-    - cron: '30 18 * * *' # 12:00 AM IST
   workflow_dispatch: # Allows manual triggering from GitHub UI
 
 jobs:
