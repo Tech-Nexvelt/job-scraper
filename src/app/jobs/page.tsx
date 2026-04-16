@@ -47,6 +47,14 @@ function JobsContent() {
     if (date) setShowAll(false)
   }, [date, searchParams])
 
+  const JOBS_PER_PAGE = 20
+  const [currentPage, setCurrentPage] = useState(1)
+
+  // Reset to page 1 when any filter changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, roleFilter, statusFilter, date, showAll])
+
   const filteredJobs = useMemo(() => {
     // Don't filter until todayStr is computed on client (avoids hydration mismatch)
     if (!todayStr) return []
@@ -60,32 +68,34 @@ function JobsContent() {
       const matchesStatus = statusFilter === "all" || job.status === statusFilter
       
       if (date) {
-        // Specific day selected: pure string comparison, immune to timezone shifts
         const selectedDateStr = format(date, "yyyy-MM-dd")
         return matchesSearch && matchesRole && matchesStatus && job.dateAdded === selectedDateStr
       } else if (!showAll) {
-        // Default: last 7 days — compare as strings
         const sevenDaysAgoStr = format(subDays(new Date(), 7), "yyyy-MM-dd")
         return matchesSearch && matchesRole && matchesStatus && job.dateAdded >= sevenDaysAgoStr
       } else {
-        // Show all history
         return matchesSearch && matchesRole && matchesStatus
       }
     })
   }, [jobs, searchQuery, roleFilter, statusFilter, date, showAll, todayStr])
 
+  const totalPages = Math.ceil(filteredJobs.length / JOBS_PER_PAGE)
+  
+  const paginatedJobs = useMemo(() => {
+    const start = (currentPage - 1) * JOBS_PER_PAGE
+    return filteredJobs.slice(start, start + JOBS_PER_PAGE)
+  }, [filteredJobs, currentPage])
+
   const groupedJobs = useMemo(() => {
     const groups: Record<string, Job[]> = {}
-    filteredJobs.forEach(job => {
-      // Guard: only group jobs with a valid 'yyyy-MM-dd' dateAdded
+    paginatedJobs.forEach(job => {
       if (!job.dateAdded || !/^\d{4}-\d{2}-\d{2}$/.test(job.dateAdded)) return
       const d = job.dateAdded
       if (!groups[d]) groups[d] = []
       groups[d].push(job)
     })
-    // Sort dates in descending order (most recent first)
     return Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0]))
-  }, [filteredJobs])
+  }, [paginatedJobs])
 
   // Generate the last 4 days as quick-select tabs (today, yesterday, day before, 3 days ago)
   const quickDays = todayStr
@@ -119,7 +129,7 @@ function JobsContent() {
                 onClick={() => {
                   setShowAll(false)
                   if (activeDateStr === d) {
-                    setDate(undefined) // tap again to deselect → back to 7-day view
+                    setDate(undefined)
                   } else {
                     setDate(new Date(d + "T00:00:00"))
                   }
@@ -193,19 +203,63 @@ function JobsContent() {
             )
           })}
 
-          {!date && !showAll && (
-             <div className="flex flex-col items-center justify-center pt-10 border-t">
-                <p className="text-muted-foreground mb-4">Showing data for the last 7 days</p>
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex flex-col items-center justify-center gap-4 pt-6 mt-10 border-t">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="rounded-xl px-4"
+                >
+                  Previous
+                </Button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="icon"
+                      onClick={() => setCurrentPage(page)}
+                      className="h-9 w-9 rounded-xl"
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="rounded-xl px-4"
+                >
+                  Next
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Showing {((currentPage - 1) * JOBS_PER_PAGE) + 1} to {Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)} of {filteredJobs.length} jobs
+              </p>
+            </div>
+          )}
+
+          {!date && !showAll && !date && filteredJobs.length >= JOBS_PER_PAGE && (
+             <div className="flex flex-col items-center justify-center pt-8">
                 <Button 
-                  variant="outline" 
-                  className="rounded-xl gap-2 h-10 px-6 hover:bg-primary hover:text-primary-foreground transition-all active:scale-95"
+                  variant="ghost" 
+                  className="rounded-xl gap-2 text-primary hover:bg-primary/5"
                   onClick={() => setShowAll(true)}
                 >
                   <History className="size-4" />
-                  View Older History
+                  View Full History
                 </Button>
              </div>
           )}
+
 
           {showAll && (
             <div className="flex justify-center pt-10 border-t items-center gap-2 text-muted-foreground italic text-sm">
