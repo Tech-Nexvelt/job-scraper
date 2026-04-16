@@ -205,47 +205,65 @@ function JobsContent() {
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="flex flex-col items-center justify-center gap-4 pt-6 mt-10 border-t">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col items-center justify-center gap-6 pt-10 mt-10 border-t">
+              <div className="flex items-center gap-3">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  onClick={() => {
+                    setCurrentPage(prev => Math.max(1, prev - 1))
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
                   disabled={currentPage === 1}
-                  className="rounded-xl px-4"
+                  className="rounded-full px-5 border-2 hover:border-primary/60 hover:text-primary transition-all active:scale-95 disabled:opacity-50"
                 >
                   Previous
                 </Button>
                 
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <Button
-                      key={page}
-                      variant={currentPage === page ? "default" : "outline"}
-                      size="icon"
-                      onClick={() => setCurrentPage(page)}
-                      className="h-9 w-9 rounded-xl"
-                    >
-                      {page}
-                    </Button>
-                  ))}
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                    const isActive = currentPage === page
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => {
+                          setCurrentPage(page)
+                          window.scrollTo({ top: 0, behavior: 'smooth' })
+                        }}
+                        className={[
+                          "h-10 w-10 rounded-full text-sm font-bold border-2 transition-all duration-200",
+                          isActive
+                            ? "bg-primary text-primary-foreground border-primary shadow-lg scale-110"
+                            : "bg-background text-muted-foreground border-border hover:border-primary/60 hover:text-primary hover:scale-105",
+                        ].join(" ")}
+                      >
+                        {page}
+                      </button>
+                    )
+                  })}
                 </div>
 
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  onClick={() => {
+                    setCurrentPage(prev => Math.min(totalPages, prev + 1))
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
                   disabled={currentPage === totalPages}
-                  className="rounded-xl px-4"
+                  className="rounded-full px-5 border-2 hover:border-primary/60 hover:text-primary transition-all active:scale-95 disabled:opacity-50"
                 >
                   Next
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Showing {((currentPage - 1) * JOBS_PER_PAGE) + 1} to {Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)} of {filteredJobs.length} jobs
-              </p>
+              <div className="flex items-center gap-2 px-4 py-1.5 bg-muted/30 rounded-full border border-border/50">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                  Showing <span className="text-foreground">{((currentPage - 1) * JOBS_PER_PAGE) + 1}</span> - <span className="text-foreground">{Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)}</span> of <span className="text-foreground">{filteredJobs.length}</span> results
+                </p>
+              </div>
             </div>
           )}
+
 
           {!date && !showAll && !date && filteredJobs.length >= JOBS_PER_PAGE && (
              <div className="flex flex-col items-center justify-center pt-8">

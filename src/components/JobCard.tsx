@@ -18,11 +18,11 @@ interface JobCardProps {
 export function JobCard({ job, onToggleBookmark, onMarkApplied, onClick }: JobCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Applied": return "bg-blue-500/10 text-blue-500 hover:bg-blue-500/20"
+      case "Applied": return "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20"
       case "Interview": return "bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
       case "Rejected": return "bg-rose-500/10 text-rose-500 hover:bg-rose-500/20"
       case "Not Applied": return "bg-slate-500/10 text-slate-500 hover:bg-slate-500/20"
-      case "Saved": return "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20"
+      case "Saved": return "bg-blue-500/10 text-blue-500 hover:bg-blue-500/20"
       default: return "bg-muted"
     }
   }

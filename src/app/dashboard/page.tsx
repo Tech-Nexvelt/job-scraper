@@ -40,7 +40,7 @@ export default function DashboardPage() {
           value={stats.total}
           icon={Briefcase}
           trend={{ value: 12, positive: true }}
-          color="text-blue-500"
+          color="text-primary"
         />
         <StatsCard
           title="Applied"
