@@ -34,13 +34,13 @@ def send_scraping_alert(total_new_jobs: int):
         body = f"""
         <html>
             <body style="font-family: Arial, sans-serif; color: #333;">
-                <h2 style="color: #3b82f6;">Scraping Session Complete</h2>
+                <h2 style="color: #2DD4A7;">Scraping Session Complete</h2>
                 <p>Hello,</p>
                 <p>The automated job scraper has finished its latest run.</p>
                 <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
                     <p style="margin: 0; font-size: 18px;">New Jobs Found: <strong>{total_new_jobs}</strong></p>
                 </div>
-                <p>You can view the new listings on your <a href="http://localhost:3000/jobs">Job Tracker Dashboard</a>.</p>
+                <p>You can view the new listings on your <strong>Job Tracker Dashboard</strong>.</p>
                 <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
                 <p style="font-size: 12px; color: #999;">This is an automated message from your Job Tracker System.</p>
             </body>
