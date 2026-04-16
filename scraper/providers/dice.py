@@ -1,6 +1,7 @@
 import logging
 import asyncio
 import urllib.parse
+from datetime import datetime
 from playwright.async_api import Page
 from typing import List, Dict
 
@@ -17,7 +18,8 @@ async def scrape_dice(keywords: List[str], page: Page) -> List[Dict]:
         logger.info(f"Searching Dice for: {keyword}")
         
         encoded_keyword = urllib.parse.quote(keyword)
-        base_url = f"https://www.dice.com/jobs?q={encoded_keyword}&location=USA&filters.workSetting=On%20Site&filters.employmentType=Full%20Time"
+        # Added filters.postedDate=ONE for past 24 hours
+        base_url = f"https://www.dice.com/jobs?q={encoded_keyword}&location=USA&filters.workSetting=On%20Site&filters.employmentType=Full%20Time&filters.postedDate=ONE"
         
         # Scrape up to 5 pages (reduced from 10 to avoid bot detection while being resilient)
         for page_num in range(1, 6):
@@ -58,6 +60,9 @@ async def scrape_dice(keywords: List[str], page: Page) -> List[Dict]:
                         
                         location_el = await card.query_selector("span[data-cy='card-location'], .card-location")
                         location = await location_el.inner_text() if location_el else "USA"
+
+                        posted_el = await card.query_selector("span[data-cy='card-posted-date'], .card-posted-date")
+                        posted_date = await posted_el.inner_text() if posted_el else "Today"
                         
                         if title and href:
                             all_jobs.append({
@@ -66,8 +71,9 @@ async def scrape_dice(keywords: List[str], page: Page) -> List[Dict]:
                                 "location": location.strip(),
                                 "apply_link": href,
                                 "description": f"Position at {company_name} found on Dice. (On-site, Full-time)",
-                                "date_posted": "Recent",
-                                "source": "dice.com"
+                                "date_posted": posted_date.strip(),
+                                "source": "dice.com",
+                                "last_scraped_at": datetime.now().isoformat()
                             })
                     except Exception:
                         continue

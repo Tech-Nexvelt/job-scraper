@@ -17,8 +17,8 @@ async def scrape_linkedin(keywords: List[str], page: Page) -> List[Dict]:
         logger.info(f"Searching LinkedIn for: {keyword}")
         
         encoded_keyword = urllib.parse.quote(keyword)
-        # f_WT=1 (On-site), f_JT=F (Full-time)
-        base_url = f"https://www.linkedin.com/jobs/search?keywords={encoded_keyword}&location=United%20States&f_WT=1&f_JT=F"
+        # f_WT=1 (On-site), f_JT=F (Full-time), f_TPR=r86400 (Past 24 hours)
+        base_url = f"https://www.linkedin.com/jobs/search?keywords={encoded_keyword}&location=United%20States&f_WT=1&f_JT=F&f_TPR=r86400"
         
         # Scrape up to 10 pages (250 jobs) per keyword to meet the 20-jobs-per-role quota
         for page_num in range(0, 10):
@@ -65,6 +65,9 @@ async def scrape_linkedin(keywords: List[str], page: Page) -> List[Dict]:
                         
                         location_el = await card.query_selector(".job-search-card__location")
                         location = await location_el.inner_text() if location_el else "USA"
+
+                        posted_el = await card.query_selector("time.job-search-card__listdate, time.job-search-card__listdate--new")
+                        posted_date = await posted_el.inner_text() if posted_el else "Today"
                         
                         if title and href:
                             # Clean up URL (LinkedIn URLs often have tracking params)
@@ -76,7 +79,7 @@ async def scrape_linkedin(keywords: List[str], page: Page) -> List[Dict]:
                                 "location": location.strip(),
                                 "apply_link": clean_href,
                                 "description": f"Position at {company_name} found on LinkedIn. (On-site, Full-time)",
-                                "date_posted": "Recent",
+                                "date_posted": posted_date.strip(),
                                 "source": "linkedin.com"
                             })
                     except Exception as e:
