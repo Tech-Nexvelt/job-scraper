@@ -1,17 +1,23 @@
 "use client"
 
 import React from "react"
-import { MapPin, Building2, ExternalLink, Bookmark } from "lucide-react"
+import { MapPin, Building2, ExternalLink, Bookmark, ChevronDown } from "lucide-react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Job } from "@/lib/data"
 import { cn } from "@/lib/utils"
 
 interface JobCardProps {
   job: Job
   onToggleBookmark?: (id: string) => void
-  onMarkApplied?: (id: string) => void
+  onMarkApplied?: (id: string, status: string) => void
   onClick?: (job: Job) => void
 }
 
@@ -87,19 +93,38 @@ export function JobCard({ job, onToggleBookmark, onMarkApplied, onClick }: JobCa
           Apply Now <ExternalLink className="h-3 w-3" />
         </a>
         
-        {job.status !== "Applied" && (
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="ml-2 h-7 rounded-lg text-[10px] font-bold uppercase tracking-tight bg-emerald-500/5 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all shadow-none"
-            onClick={(e) => {
-              e.stopPropagation()
-              onMarkApplied?.(job.id)
-            }}
-          >
-            Mark Applied
-          </Button>
-        )}
+        <div className="ml-2" onClick={(e) => e.stopPropagation()}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className={cn(
+                  "h-7 rounded-lg text-[10px] font-bold uppercase tracking-tight transition-all shadow-none flex items-center gap-1 px-3",
+                  job.status === "Completed" || job.status === "Applied"
+                    ? "bg-[#2DD4A7] text-white border-[#2DD4A7] hover:bg-[#2DD4A7]/90" 
+                    : job.status === "Started"
+                      ? "bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500/20"
+                      : "bg-slate-500/5 text-slate-600 border-slate-500/20 hover:bg-slate-500/10"
+                )}
+              >
+                {job.status === "Completed" || job.status === "Applied" ? "Completed" : job.status === "Started" ? "Started" : "Not Started"}
+                <ChevronDown className="h-2.5 w-2.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="rounded-xl border-border/50">
+              <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Not Started" as any)} className="text-[10px] font-bold uppercase tracking-wider">
+                Not Started
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Started" as any)} className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                Started
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Completed" as any)} className="text-[10px] font-bold uppercase tracking-wider text-[#2DD4A7]">
+                Completed
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
 
         <div className="ml-auto text-[11px] text-muted-foreground font-medium">
           Added {job.dateAdded}

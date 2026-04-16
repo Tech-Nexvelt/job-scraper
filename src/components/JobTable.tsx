@@ -18,16 +18,24 @@ import { cn } from "@/lib/utils"
 interface JobTableProps {
   jobs: Job[]
   onToggleBookmark?: (id: string) => void
-  onMarkApplied?: (id: string) => void
+  onMarkApplied?: (id: string, status: string) => void
 }
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function JobTable({ jobs, onToggleBookmark, onMarkApplied }: JobTableProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Applied": return "bg-blue-500/10 text-blue-500"
+      case "Applied": case "Completed": return "bg-[#2DD4A7]/10 text-[#2DD4A7]"
       case "Interview": return "bg-amber-500/10 text-amber-500"
       case "Rejected": return "bg-rose-500/10 text-rose-500"
-      case "Not Applied": return "bg-slate-500/10 text-slate-500"
+      case "Not Applied": case "Not Started": return "bg-slate-500/10 text-slate-500"
+      case "Started": return "bg-amber-500/10 text-amber-600"
       default: return ""
     }
   }
@@ -87,23 +95,38 @@ export function JobTable({ jobs, onToggleBookmark, onMarkApplied }: JobTableProp
                     href={job.link} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "rounded-full")}
+                    className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "rounded-full hover:bg-muted")}
                   >
                     <ExternalLink className="h-4 w-4" />
                   </a>
-                  {job.status !== "Applied" && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 rounded-full text-emerald-500 hover:text-emerald-600 hover:bg-emerald-500/10"
-                      onClick={() => {
-                        onMarkApplied?.(job.id);
-                      }}
-                      title="Mark as Applied"
-                    >
-                      <CheckCircle2 className="h-4 w-4" />
-                    </Button>
-                  )}
+                  
+                  <div className="ml-1">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className={cn(
+                            "h-8 w-8 rounded-full transition-all",
+                            job.status === "Completed" ? "text-[#2DD4A7]" : job.status === "Started" ? "text-amber-600" : "text-muted-foreground"
+                          )}
+                        >
+                          <CheckCircle2 className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="rounded-xl border-border/50">
+                        <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Not Started")} className="text-[10px] font-bold uppercase tracking-wider">
+                          Not Started
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Started")} className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                          Started
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Completed")} className="text-[10px] font-bold uppercase tracking-wider text-[#2DD4A7]">
+                          Completed
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
               </TableCell>
             </TableRow>
@@ -111,5 +134,6 @@ export function JobTable({ jobs, onToggleBookmark, onMarkApplied }: JobTableProp
         </TableBody>
       </Table>
     </div>
+
   )
 }

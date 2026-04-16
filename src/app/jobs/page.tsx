@@ -185,7 +185,7 @@ function JobsContent() {
                         key={job.id} 
                         job={job} 
                         onToggleBookmark={() => toggleBookmark(job.id)} 
-                        onMarkApplied={() => updateStatus(job.id, "Applied")}
+                        onMarkApplied={(id, status) => updateStatus(id, status as any)}
                         onClick={setSelectedJob}
                       />
                     ))}
@@ -195,7 +195,7 @@ function JobsContent() {
                     <JobTable 
                       jobs={dayJobs} 
                       onToggleBookmark={(id) => toggleBookmark(id)} 
-                      onMarkApplied={(id) => updateStatus(id, "Applied")}
+                      onMarkApplied={(id, status) => updateStatus(id, status as any)}
                     />
                   </div>
                 )}
