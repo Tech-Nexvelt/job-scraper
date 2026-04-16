@@ -6,68 +6,77 @@ logger = logging.getLogger(__name__)
 
 async def scrape_workday(company: Dict, page: Page) -> List[Dict]:
     """
-    Scraper for Workday career portals
+    Scraper for Workday career portals. Optimized for slow loading and Shadow DOM components.
     """
     url = company["careers_url"]
     name = company["name"]
-    max_jobs = company.get("max_jobs", 20)
     
     jobs = []
     
     try:
-        # domcontentloaded is better for Workday; we add a manual wait after
-        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        # Load page with generous timeout
+        await page.goto(url, wait_until="domcontentloaded", timeout=90000)
         
-        # Workday takes significant time to render the dynamic list
-        await page.wait_for_timeout(12000)
+        # Workday portals often show a loading spinner for several seconds
+        # We wait 15s to ensure the dynamic list has actually rendered
+        await page.wait_for_timeout(15000)
         
-        # Increased timeout and added retry for the main selector
-        selector = "[data-automation-id='jobTitle']"
-        try:
-            # "Take as much as time to get jobs" - Increased to 90s
-            await page.wait_for_selector(selector, timeout=90000)
-        except Exception:
-            # Try a broader selector if specifically tagged one fails
-            logger.warning(f"Secondary selector check for {name}")
-            # Increased to 40s for secondary check
-            await page.wait_for_selector("li[data-automation-id='jobPosting']", timeout=40000)
-            selector = "li[data-automation-id='jobPosting']"
-            
+        # We try multiple common Workday selectors in order of specificity
+        selectors = [
+            "[data-automation-id='jobTitle']",
+            "li[data-automation-id='jobPosting']",
+            "a[data-automation-id='jobTitle']",
+            "section[data-automation-id='jobResults'] li"
+        ]
+        
+        main_selector = None
+        for selector in selectors:
+            try:
+                # Increased timeout for each check to handle huge latency
+                await page.wait_for_selector(selector, timeout=60000)
+                main_selector = selector
+                break
+            except Exception:
+                continue
+        
+        if not main_selector:
+            logger.warning(f"Workday: No job selectors found for {name} after waiting. Page may be empty or blocked.")
+            return []
+
         # Extract titles and links
-        elements = await page.query_selector_all(selector)
+        elements = await page.query_selector_all(main_selector)
         
         for el in elements:
-            # If we matched jobTitle directly, use it. If we matched posting, find title inside.
-            title_el = el if selector == "[data-automation-id='jobTitle']" else await el.query_selector("[data-automation-id='jobTitle']")
-            
-            if title_el:
-                title_text = await title_el.inner_text()
-                href = await title_el.get_attribute("href")
+            try:
+                # If we matched jobTitle directly, use it. Otherwise, look for it inside the row.
+                title_el = el if "jobTitle" in main_selector else await el.query_selector("[data-automation-id='jobTitle']")
                 
-                # Use static location from config
-                location = company.get("location", "USA")
-                
-                if title_text:
-                    # STRICT FILTER: Only Onsite, No Remote, No Hybrid
-                    title_lower = title_text.lower()
-                    location_lower = location.lower()
+                if title_el:
+                    title_text = await title_el.inner_text()
+                    href = await title_el.get_attribute("href")
+                    location = company.get("location", "USA")
                     
-                    is_remote = any(k in title_lower or k in location_lower for k in ["remote", "hybrid", "wfh", "telecommute"])
-                    if is_remote:
-                        logger.info(f"Skipping remote/hybrid job at {name}: {title_text}")
-                        continue
+                    if title_text:
+                        # FILTER: Skip Remote/Hybrid as per project requirements
+                        title_lower = title_text.lower()
+                        if any(k in title_lower for k in ["remote", "hybrid", "wfh", "telecommute"]):
+                            continue
 
-                    full_link = href if href and href.startswith("http") else url # Fallback to portal URL
-                    jobs.append({
-                        "job_title": title_text.strip(),
-                        "company": name,
-                        "location": location,
-                        "apply_link": full_link,
-                        "description": f"Position at {name} via Workday",
-                        "date_posted": "Recent",
-                        "source": "company_career_page"
-                    })
+                        full_link = href if href and href.startswith("http") else url
+                        jobs.append({
+                            "job_title": title_text.strip(),
+                            "company": name,
+                            "location": location,
+                            "apply_link": full_link,
+                            "description": f"Position at {name} via Workday",
+                            "date_posted": "Recent",
+                            "source": "company_career_page"
+                        })
+            except Exception:
+                continue
+                
     except Exception as e:
-        logger.error(f"Error scraping Workday for {name}: {e}")
+        logger.error(f"Workday Error for {name}: {str(e)[:100]}")
         
     return jobs
+
