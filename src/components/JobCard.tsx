@@ -95,22 +95,18 @@ export function JobCard({ job, onToggleBookmark, onMarkApplied, onClick }: JobCa
         
         <div className="ml-2" onClick={(e) => e.stopPropagation()}>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className={cn(
-                  "h-7 rounded-lg text-[10px] font-bold uppercase tracking-tight transition-all shadow-none flex items-center gap-1 px-3",
-                  job.status === "Completed" || job.status === "Applied"
-                    ? "bg-[#2DD4A7] text-white border-[#2DD4A7] hover:bg-[#2DD4A7]/90" 
-                    : job.status === "Started"
-                      ? "bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500/20"
-                      : "bg-slate-500/5 text-slate-600 border-slate-500/20 hover:bg-slate-500/10"
-                )}
-              >
-                {job.status === "Completed" || job.status === "Applied" ? "Completed" : job.status === "Started" ? "Started" : "Not Started"}
-                <ChevronDown className="h-2.5 w-2.5" />
-              </Button>
+            <DropdownMenuTrigger
+              className={cn(
+                "h-7 rounded-lg text-[10px] font-bold uppercase tracking-tight transition-all shadow-none flex items-center gap-1 px-3 border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+                job.status === "Completed" || job.status === "Applied"
+                  ? "bg-[#2DD4A7] text-white border-[#2DD4A7] hover:bg-[#2DD4A7]/90" 
+                  : job.status === "Started"
+                    ? "bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500/20"
+                    : "bg-slate-500/5 text-slate-600 border-slate-500/20 hover:bg-slate-500/10"
+              )}
+            >
+              {job.status === "Completed" || job.status === "Applied" ? "Completed" : job.status === "Started" ? "Started" : "Not Started"}
+              <ChevronDown className="h-2.5 w-2.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="rounded-xl border-border/50">
               <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Not Started" as any)} className="text-[10px] font-bold uppercase tracking-wider">

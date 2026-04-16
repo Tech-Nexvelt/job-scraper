@@ -102,17 +102,13 @@ export function JobTable({ jobs, onToggleBookmark, onMarkApplied }: JobTableProp
                   
                   <div className="ml-1">
                     <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className={cn(
-                            "h-8 w-8 rounded-full transition-all",
-                            job.status === "Completed" ? "text-[#2DD4A7]" : job.status === "Started" ? "text-amber-600" : "text-muted-foreground"
-                          )}
-                        >
-                          <CheckCircle2 className="h-4 w-4" />
-                        </Button>
+                      <DropdownMenuTrigger
+                        className={cn(
+                          "h-8 w-8 rounded-full transition-all flex items-center justify-center hover:bg-muted",
+                          job.status === "Completed" ? "text-[#2DD4A7]" : job.status === "Started" ? "text-amber-600" : "text-muted-foreground"
+                        )}
+                      >
+                        <CheckCircle2 className="h-4 w-4" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="rounded-xl border-border/50">
                         <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Not Started")} className="text-[10px] font-bold uppercase tracking-wider">
