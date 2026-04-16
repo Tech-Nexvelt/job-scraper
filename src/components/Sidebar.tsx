@@ -39,14 +39,14 @@ export function Sidebar() {
     >
       <div className="flex h-16 items-center px-4">
         <div className={cn("flex items-center gap-2 font-bold transition-all overflow-hidden", isCollapsed && "w-0 opacity-0")}>
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary overflow-hidden">
-            <Image src="/NV-logo-short.png" alt="Logo" width={32} height={32} className="object-contain p-1" />
+          <div className="flex h-9 w-9 items-center justify-center overflow-hidden">
+            <Image src="/NV-logo-short.png" alt="Logo" width={36} height={36} className="object-contain" />
           </div>
-          <span className="text-xl whitespace-nowrap">Nexvelt Job Tracker</span>
+          <span className="text-xl whitespace-nowrap">Job Tracker</span>
         </div>
         {isCollapsed && (
-          <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-primary overflow-hidden">
-            <Image src="/NV-logo-short.png" alt="Logo" width={32} height={32} className="object-contain p-1" />
+          <div className="mx-auto flex h-9 w-9 items-center justify-center overflow-hidden">
+            <Image src="/NV-logo-short.png" alt="Logo" width={36} height={36} className="object-contain" />
           </div>
         )}
       </div>

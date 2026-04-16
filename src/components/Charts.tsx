@@ -64,7 +64,7 @@ export function RoleChart({ jobs }: ChartProps) {
               cursor={{ fill: "rgba(0,0,0,0.05)" }}
               contentStyle={{ border: "none", borderRadius: "12px", boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)" }}
             />
-            <Bar dataKey="count" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={40} />
+            <Bar dataKey="count" fill="#2DD4A7" radius={[6, 6, 0, 0]} barSize={40} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -94,7 +94,7 @@ export function StatusChart({ jobs }: ChartProps) {
     })
     
     const colors: Record<string, string> = {
-      "Applied": "#3b82f6",
+      "Applied": "#2DD4A7",
       "Interview": "#f59e0b",
       "Not Applied": "#94a3b8",
       "Rejected": "#f43f5e",
@@ -182,8 +182,8 @@ export function ActivityChart({ jobs }: ChartProps) {
           <AreaChart data={activityData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorApps" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                <stop offset="5%" stopColor="#2DD4A7" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#2DD4A7" stopOpacity={0} />
               </linearGradient>
             </defs>
             <XAxis 
@@ -203,7 +203,7 @@ export function ActivityChart({ jobs }: ChartProps) {
             <Area
               type="monotone"
               dataKey="applications"
-              stroke="#3b82f6"
+              stroke="#2DD4A7"
               strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorApps)"
