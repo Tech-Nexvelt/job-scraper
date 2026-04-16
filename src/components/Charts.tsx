@@ -207,6 +207,7 @@ export function ActivityChart({ jobs }: ChartProps) {
               strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorApps)"
+              animationDuration={1000}
             />
           </AreaChart>
         </ResponsiveContainer>

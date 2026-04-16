@@ -12,7 +12,12 @@ export default function DashboardPage() {
 
   const stats = React.useMemo(() => {
     const total = jobs.length
-    const applied = jobs.filter(j => j.status === "Applied").length
+    // Count both explicitly "Applied" (legacy) and the new "Completed" and "Started" states
+    const applied = jobs.filter(j => 
+      j.status === "Applied" || 
+      j.status === "Completed" || 
+      j.status === "Started"
+    ).length
     const interviews = jobs.filter(j => j.status === "Interview").length
     const rejected = jobs.filter(j => j.status === "Rejected").length
 
