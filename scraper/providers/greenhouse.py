@@ -22,7 +22,7 @@ async def scrape_greenhouse(company: Dict, page: Page) -> List[Dict]:
     
     try:
         # Use httpx for a faster, lighter request than opening a browser tab
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.get(api_url)
             if response.status_code != 200:
                 logger.error(f"Greenhouse API error for {name}: {response.status_code}")

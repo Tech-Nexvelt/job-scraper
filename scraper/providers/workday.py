@@ -14,8 +14,8 @@ async def scrape_workday(company: Dict, page: Page) -> List[Dict]:
     jobs = []
     
     try:
-        # Load page with generous timeout
-        await page.goto(url, wait_until="domcontentloaded", timeout=90000)
+        # Load page with very generous timeout
+        await page.goto(url, wait_until="domcontentloaded", timeout=360000)
         
         # Workday portals often show a loading spinner for several seconds
         # We wait 15s to ensure the dynamic list has actually rendered
@@ -33,7 +33,7 @@ async def scrape_workday(company: Dict, page: Page) -> List[Dict]:
         for selector in selectors:
             try:
                 # Increased timeout for each check to handle huge latency
-                await page.wait_for_selector(selector, timeout=60000)
+                await page.wait_for_selector(selector, timeout=360000)
                 main_selector = selector
                 break
             except Exception:

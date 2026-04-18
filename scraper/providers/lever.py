@@ -16,13 +16,13 @@ async def scrape_lever(company: Dict, page: Page) -> List[Dict]:
     
     try:
         # domcontentloaded is faster and more reliable than networkidle
-        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        await page.goto(url, wait_until="domcontentloaded", timeout=360000)
         
         # Lever is usually fast, but let's give it a 3s buffer
         await page.wait_for_timeout(3000)
         
-        # Increased timeout to 90s for CI environments
-        await page.wait_for_selector(".posting", timeout=90000)
+        # Increased timeout to 360s for CI environments
+        await page.wait_for_selector(".posting", timeout=360000)
         
         postings = await page.query_selector_all(".posting")
         for posting in postings:

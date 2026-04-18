@@ -18,16 +18,16 @@ async def scrape_dice(keywords: List[str], page: Page) -> List[Dict]:
         logger.info(f"Searching Dice for: {keyword}")
         
         encoded_keyword = urllib.parse.quote(keyword)
-        # Added filters.postedDate=ONE for past 24 hours
-        base_url = f"https://www.dice.com/jobs?q={encoded_keyword}&location=USA&filters.workSetting=On%20Site&filters.employmentType=Full%20Time&filters.postedDate=ONE"
+        # Added filters.postedDate=SEVEN for past week
+        base_url = f"https://www.dice.com/jobs?q={encoded_keyword}&location=USA&filters.workSetting=On%20Site&filters.employmentType=Full%20Time&filters.postedDate=SEVEN"
         
         # Scrape up to 5 pages (reduced from 10 to avoid bot detection while being resilient)
         for page_num in range(1, 6):
             url = f"{base_url}&page={page_num}"
             try:
                 logger.info(f"Dice: Fetching page {page_num} for {keyword}")
-                # Use longer timeout for navigation
-                await page.goto(url, wait_until="load", timeout=90000)
+                # Use very generous timeout for navigation
+                await page.goto(url, wait_until="load", timeout=360000)
                 
                 # Check for "Zero Results" messages so we don't wait for selectors in vain
                 no_results_text = ["we couldn't find any jobs", "0 jobs matching", "no results found"]
@@ -35,12 +35,13 @@ async def scrape_dice(keywords: List[str], page: Page) -> List[Dict]:
                 if any(msg in content.lower() for msg in no_results_text):
                     logger.info(f"Dice: No results found for '{keyword}', skipping page.")
                     break
-
-                # Wait for results or empty state - increased to 120s
+[diff_block_start]
+                # Wait for results or empty state - increased to 360s
                 # We try multiple common selectors for Dice cards
                 try:
-                    await page.wait_for_selector("d-card, [data-cy='card-title-link'], .card-title-link", timeout=120000)
+                    await page.wait_for_selector("d-card, [data-cy='card-title-link'], .card-title-link", timeout=360000)
                 except Exception:
+[diff_block_end]
                     logger.warning(f"Dice: Timeout waiting for cards on page {page_num}. Page might be blocked or empty.")
                     break
                 

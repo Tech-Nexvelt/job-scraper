@@ -15,12 +15,12 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
     jobs = []
     
     # Navigate to URL
-    await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+    await page.goto(url, wait_until="domcontentloaded", timeout=360000)
     await page.wait_for_timeout(5000)
     
     if "microsoft" in name.lower():
         try:
-            await page.wait_for_selector("a[id^='job-card-']", timeout=40000)
+            await page.wait_for_selector("a[id^='job-card-']", timeout=360000)
             cards = await page.query_selector_all("a[id^='job-card-']")
             for card in cards:
                 title_el = await card.query_selector("div[class*='job-title']")
@@ -57,7 +57,7 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
 
     elif "google" in name.lower():
         try:
-            await page.wait_for_selector("a[aria-label^='Learn more about']", timeout=40000)
+            await page.wait_for_selector("a[aria-label^='Learn more about']", timeout=360000)
             cards = await page.query_selector_all("a[aria-label^='Learn more about']")
             for card in cards:
                 title = await card.get_attribute("aria-label")
@@ -93,7 +93,7 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
 
     elif "amazon" in name.lower():
         try:
-            await page.wait_for_selector("h3.job-title", timeout=90000)
+            await page.wait_for_selector("h3.job-title", timeout=360000)
             cards = await page.query_selector_all("div.job")
             for card in cards:
                 title_el = await card.query_selector("h3.job-title")
@@ -118,7 +118,7 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
 
     elif "apple" in name.lower():
         try:
-            await page.wait_for_selector("a.table--column__link", timeout=90000)
+            await page.wait_for_selector("a.table--column__link", timeout=360000)
             cards = await page.query_selector_all("tr.table-row")
             for card in cards:
                 title_el = await card.query_selector("a.table--column__link")
@@ -141,7 +141,7 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
 
     elif "exxonmobil" in name.lower() or "jobs.exxonmobil.com" in url:
         try:
-            await page.wait_for_selector("a.jobTitle-link", timeout=90000)
+            await page.wait_for_selector("a.jobTitle-link", timeout=360000)
             cards = await page.query_selector_all("tr.job-tile")
             for card in cards:
                 title_el = await card.query_selector("a.jobTitle-link")
