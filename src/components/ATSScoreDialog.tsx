@@ -48,7 +48,7 @@ export function ATSScoreDialog({ job, isOpen, onClose }: ATSScoreDialogProps) {
       setScore(data.score)
       setFeedback(data.feedback)
       setError(null)
-    } catch (err: any) {
+    } catch (err) {
       console.error("Analysis failed:", err)
       setError("Failed to connect to AI backend. Ensure the server is running on port 8000.")
     } finally {

@@ -35,13 +35,11 @@ async def scrape_dice(keywords: List[str], page: Page) -> List[Dict]:
                 if any(msg in content.lower() for msg in no_results_text):
                     logger.info(f"Dice: No results found for '{keyword}', skipping page.")
                     break
-[diff_block_start]
                 # Wait for results or empty state - increased to 360s
                 # We try multiple common selectors for Dice cards
                 try:
                     await page.wait_for_selector("d-card, [data-cy='card-title-link'], .card-title-link", timeout=360000)
                 except Exception:
-[diff_block_end]
                     logger.warning(f"Dice: Timeout waiting for cards on page {page_num}. Page might be blocked or empty.")
                     break
                 

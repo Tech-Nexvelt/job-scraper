@@ -102,7 +102,7 @@ export function StatusChart({ jobs }: ChartProps) {
     }
 
     return Object.entries(counts)
-      .filter(([_, value]) => value > 0)
+      .filter(([name, value]) => name && value > 0)
       .map(([name, value]) => ({ 
         name, 
         value, 
@@ -158,13 +158,20 @@ export function ActivityChart({ jobs }: ChartProps) {
       "Sun": 0, "Mon": 0, "Tue": 0, "Wed": 0, "Thu": 0, "Fri": 0, "Sat": 0
     }
     
-    // In a real app we'd filter for last 7 days. For now we use all jobs.
     jobs.forEach(job => {
-      // Assuming dateAdded is in DD/MM/YYYY or similar from the mapper
-      // We'll just distribute them roughly for the mock activity
-      const dayIndex = new Date().getDay() // Current day
-      const randomDay = days[Math.floor(Math.random() * 7)]
-      counts[randomDay]++
+      if (job.dateAdded) {
+        try {
+          // dateAdded is in YYYY-MM-DD format from the mapper
+          const date = new Date(job.dateAdded)
+          if (!isNaN(date.getTime())) {
+             const dayName = days[date.getDay()]
+             counts[dayName]++
+          }
+        } catch (e) {
+          // Fallback to today if parsing fails
+          counts[days[new Date().getDay()]]++
+        }
+      }
     })
 
     return days.map(name => ({ name, applications: counts[name] }))

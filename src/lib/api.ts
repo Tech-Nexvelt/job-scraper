@@ -11,7 +11,7 @@ export async function fetchJobs(): Promise<Job[]> {
     if (error) throw error;
     
     // Map API data to Frontend Job interface
-    const allJobs = data.map((item: any) => ({
+    const allJobs: Job[] = (data as any[]).map((item) => ({
       id: item.id.toString(),
       title: item.job_title || "Untitled Position",
       company: item.company || "Unknown Company",
@@ -26,8 +26,8 @@ export async function fetchJobs(): Promise<Job[]> {
     }));
 
     // Deduplicate by Title + Company
-    const seen = new Set();
-    const uniqueJobs = allJobs.filter((job: any) => {
+    const seen = new Set<string>();
+    const uniqueJobs = allJobs.filter((job) => {
       const key = `${job.title}-${job.company}-${job.location}`.toLowerCase();
       if (seen.has(key)) return false;
       seen.add(key);

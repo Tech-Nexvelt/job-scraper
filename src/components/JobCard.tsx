@@ -109,13 +109,13 @@ export function JobCard({ job, onToggleBookmark, onMarkApplied, onClick }: JobCa
               <ChevronDown className="h-2.5 w-2.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="rounded-xl border-border/50">
-              <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Not Started" as any)} className="text-[10px] font-bold uppercase tracking-wider">
+              <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Not Started")} className="text-[10px] font-bold uppercase tracking-wider">
                 Not Started
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Started" as any)} className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+              <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Started")} className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
                 Started
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Completed" as any)} className="text-[10px] font-bold uppercase tracking-wider text-[#2DD4A7]">
+              <DropdownMenuItem onClick={() => onMarkApplied?.(job.id, "Completed")} className="text-[10px] font-bold uppercase tracking-wider text-[#2DD4A7]">
                 Completed
               </DropdownMenuItem>
             </DropdownMenuContent>

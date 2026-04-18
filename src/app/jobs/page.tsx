@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useMemo, Suspense, useEffect } from "react"
-import { Job } from "@/lib/data"
+import { Job, JobStatus } from "@/lib/data"
 import { JobCard } from "@/components/JobCard"
 import { JobTable } from "@/components/JobTable"
 import { ToggleView } from "@/components/ToggleView"
@@ -50,10 +50,18 @@ function JobsContent() {
   const JOBS_PER_PAGE = 20
   const [currentPage, setCurrentPage] = useState(1)
 
-  // Reset to page 1 when any filter changes
-  useEffect(() => {
+  // Reset to page 1 when any filter changes - using render-time adjustment for React 18/19 compatibility
+  const [prevFilters, setPrevFilters] = useState({ searchQuery, roleFilter, statusFilter, date, showAll })
+  if (
+      prevFilters.searchQuery !== searchQuery || 
+      prevFilters.roleFilter !== roleFilter || 
+      prevFilters.statusFilter !== statusFilter || 
+      prevFilters.date !== date || 
+      prevFilters.showAll !== showAll
+  ) {
     setCurrentPage(1)
-  }, [searchQuery, roleFilter, statusFilter, date, showAll])
+    setPrevFilters({ searchQuery, roleFilter, statusFilter, date, showAll })
+  }
 
   const filteredJobs = useMemo(() => {
     // Don't filter until todayStr is computed on client (avoids hydration mismatch)
@@ -185,7 +193,7 @@ function JobsContent() {
                         key={job.id} 
                         job={job} 
                         onToggleBookmark={() => toggleBookmark(job.id)} 
-                        onMarkApplied={(id, status) => updateStatus(id, status as any)}
+                        onMarkApplied={(id, status) => updateStatus(id, status as JobStatus)}
                         onClick={setSelectedJob}
                       />
                     ))}
@@ -195,7 +203,7 @@ function JobsContent() {
                     <JobTable 
                       jobs={dayJobs} 
                       onToggleBookmark={(id) => toggleBookmark(id)} 
-                      onMarkApplied={(id, status) => updateStatus(id, status as any)}
+                      onMarkApplied={(id, status) => updateStatus(id, status as JobStatus)}
                     />
                   </div>
                 )}

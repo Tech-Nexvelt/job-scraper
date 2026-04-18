@@ -10,7 +10,6 @@ import {
   BarChart3, 
   Bookmark, 
   CheckCircle2,
-  Settings, 
   ChevronLeft, 
   ChevronRight,
   LogOut
