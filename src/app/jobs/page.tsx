@@ -21,7 +21,7 @@ function JobsContent() {
   const [view, setView] = useState<"card" | "table">("card")
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
   const [date, setDate] = useState<Date | undefined>(undefined)
-  const [showAll, setShowAll] = useState(false)
+  const [showAll, setShowAll] = useState(true)
   // Use a string form of today's date computed on the client only (avoids hydration mismatch)
   const [todayStr, setTodayStr] = useState<string | null>(null)
 

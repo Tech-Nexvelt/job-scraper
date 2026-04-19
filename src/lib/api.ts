@@ -25,16 +25,7 @@ export async function fetchJobs(): Promise<Job[]> {
       isBookmarked: item.is_saved || false,
     }));
 
-    // Deduplicate by Title + Company
-    const seen = new Set<string>();
-    const uniqueJobs = allJobs.filter((job) => {
-      const key = `${job.title}-${job.company}-${job.location}`.toLowerCase();
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-
-    return uniqueJobs;
+    return allJobs;
   } catch (error) {
     console.error("Supabase Fetch Error:", error);
     if (process.env.NODE_ENV === "development") {
