@@ -18,8 +18,8 @@ async def scrape_dice(keywords: List[str], page: Page) -> List[Dict]:
         logger.info(f"Searching Dice for: {keyword}")
         
         encoded_keyword = urllib.parse.quote(keyword)
-        # Added filters.postedDate=SEVEN for past week
-        base_url = f"https://www.dice.com/jobs?q={encoded_keyword}&location=USA&filters.workSetting=On%20Site&filters.employmentType=Full%20Time&filters.postedDate=SEVEN"
+        # Added filters.postedDate=THREE (Closest to 48h/2-day limit)
+        base_url = f"https://www.dice.com/jobs?q={encoded_keyword}&location=USA&filters.workSetting=On%20Site&filters.employmentType=Full%20Time&filters.postedDate=THREE"
         
         # Scrape up to 5 pages (reduced from 10 to avoid bot detection while being resilient)
         for page_num in range(1, 6):

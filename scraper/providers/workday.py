@@ -62,6 +62,16 @@ async def scrape_workday(company: Dict, page: Page) -> List[Dict]:
                         if any(k in title_lower for k in ["remote", "hybrid", "wfh", "telecommute"]):
                             continue
 
+                        # NEW: 2-Day Freshness Filter
+                        posted_date_el = await el.query_selector("[data-automation-id='postedOn']")
+                        posted_date_text = await posted_date_el.inner_text() if posted_date_el else "Today"
+                        
+                        # Skip if mentions 3 or more days ago
+                        p_lower = posted_date_text.lower()
+                        if any(x in p_lower for x in ["3 days", "4 days", "5 days", "30+", "weeks ago", "months ago"]):
+                            logger.info(f"Skipping old job at {name}: {title_text} ({posted_date_text})")
+                            continue
+
                         full_link = href if href and href.startswith("http") else url
                         jobs.append({
                             "job_title": title_text.strip(),
@@ -69,7 +79,7 @@ async def scrape_workday(company: Dict, page: Page) -> List[Dict]:
                             "location": location,
                             "apply_link": full_link,
                             "description": f"Position at {name} via Workday",
-                            "date_posted": "Recent",
+                            "date_posted": posted_date_text.strip(),
                             "source": "company_career_page"
                         })
             except Exception:

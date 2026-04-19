@@ -17,8 +17,8 @@ async def scrape_linkedin(keywords: List[str], page: Page) -> List[Dict]:
         logger.info(f"Searching LinkedIn for: {keyword}")
         
         encoded_keyword = urllib.parse.quote(keyword)
-        # f_WT=1 (On-site), f_JT=F (Full-time), f_TPR=r604800 (Past Week)
-        base_url = f"https://www.linkedin.com/jobs/search?keywords={encoded_keyword}&location=United%20States&f_WT=1&f_JT=F&f_TPR=r604800"
+        # f_WT=1 (On-site), f_JT=F (Full-time), f_TPR=r172800 (Past 48 Hours)
+        base_url = f"https://www.linkedin.com/jobs/search?keywords={encoded_keyword}&location=United%20States&f_WT=1&f_JT=F&f_TPR=r172800"
         
         # Scrape up to 10 pages (250 jobs) per keyword to meet the 20-jobs-per-role quota
         for page_num in range(0, 10):

@@ -13,6 +13,11 @@ from scraper.providers.workday import scrape_workday
 from scraper.providers.custom import scrape_custom
 from scraper.providers.dice import scrape_dice
 from scraper.providers.linkedin import scrape_linkedin
+from scraper.providers.amazon import scrape_amazon # [NEW]
+from scraper.providers.apple import scrape_apple # [NEW]
+from scraper.providers.google import scrape_google # [NEW]
+from scraper.providers.microsoft import scrape_microsoft # [NEW]
+from scraper.providers.meta import scrape_meta # [NEW]
 
 from scraper.role_classifier import classify_role, get_domain
 from scraper.deduplicator import filter_new_jobs
@@ -73,6 +78,16 @@ async def scrape_wrapper(company: Dict, browser_context) -> List[Dict]:
                     jobs = await scrape_lever(company, page)
                 elif provider == "workday":
                     jobs = await scrape_workday(company, page)
+                elif provider == "amazon":
+                    jobs = await scrape_amazon(company, page)
+                elif provider == "apple":
+                    jobs = await scrape_apple(company, page)
+                elif provider == "google":
+                    jobs = await scrape_google(company, page)
+                elif provider == "microsoft":
+                    jobs = await scrape_microsoft(company, page)
+                elif provider == "meta":
+                    jobs = await scrape_meta(company, page)
                 else:
                     jobs = await scrape_custom(company, page)
                 
@@ -148,8 +163,13 @@ async def run() -> int:
         job["last_scraped_at"] = datetime.now(timezone.utc).isoformat()
         enriched_jobs.append(job)
 
-    # Deduplicate
+    # Deduplicate and filter by 48h freshness
     new_jobs = filter_new_jobs(enriched_jobs)
+    
+    # EARLY EXIT LOGIC: If a run results in 0 new jobs for a company that used to have many, 
+    # we can log that it's "Up to Date".
+    if not new_jobs and enriched_jobs:
+        logger.info("All jobs from this batch were either duplicates or already in DB. System is up to date.")
     
     # Insert into Supabase
     if new_jobs:

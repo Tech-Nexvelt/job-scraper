@@ -16,7 +16,38 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
     
     # Navigate to URL
     await page.goto(url, wait_until="domcontentloaded", timeout=360000)
-    await page.wait_for_timeout(5000)
+    # Discovery Phase: If this is a landing page, try to find the actual job board
+    found_search_link = False
+    discovery_selectors = [
+        "a:has-text('Search Jobs')", 
+        "a:has-text('View Jobs')", 
+        "a:has-text('Open Positions')",
+        "a:has-text('Career Opportunities')",
+        "button:has-text('Search Jobs')",
+        ".career-link",
+        "a[href*='/search']"
+    ]
+    
+    # Check if we are on a landing page by looking for common job board indicators
+    indicators = ["div.job", "tr.job", "li[data-automation-id='jobPosting']", "a[id^='job-card-']"]
+    is_job_board = False
+    for indicator in indicators:
+        if await page.query_selector(indicator):
+            is_job_board = True
+            break
+            
+    if not is_job_board:
+        logger.info(f"Landing page detected for {name}. Attempting discovery...")
+        for selector in discovery_selectors:
+            try:
+                link = await page.query_selector(selector)
+                if link:
+                    await link.click()
+                    await page.wait_for_timeout(5000)
+                    found_search_link = True
+                    break
+            except:
+                continue
     
     if "microsoft" in name.lower():
         try:
@@ -179,13 +210,18 @@ async def scrape_custom(company: Dict, page: Page) -> List[Dict]:
                     if is_remote:
                         continue
 
+                    # 2-Day Freshness Filter: Look for date text in or near the element
+                    parent_text = await el.evaluate("el => el.parentElement.innerText.toLowerCase()")
+                    if any(x in parent_text for x in ["3 days ago", "4 days ago", "5 days ago", "weeks ago", "months ago"]):
+                        continue
+
                     jobs.append({
                         "job_title": title.strip(),
                         "company": name,
                         "location": location.strip(),
                         "apply_link": url, 
                         "description": f"Position found at {name} career portal",
-                        "date_posted": "Recent",
+                        "date_posted": "Recent (48h)",
                         "source": "company_career_page"
                     })
         except Exception as e:
