@@ -118,8 +118,8 @@ function JobsContent() {
 
   // Generate pagination range with ellipses
   const getPaginationRange = () => {
-    const siblingCount = 1
-    const totalPageNumbers = 7 // Adjust logic to show roughly 7 slots
+    const siblingCount = 2
+    const totalPageNumbers = 9 // Increased to reflect more visible pages
 
     if (totalPages <= totalPageNumbers) {
       return Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -132,13 +132,13 @@ function JobsContent() {
     const shouldShowRightDots = rightSiblingIndex < totalPages - 2
 
     if (!shouldShowLeftDots && shouldShowRightDots) {
-      let leftItemCount = 5
+      let leftItemCount = 7
       let leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1)
       return [...leftRange, "...", totalPages]
     }
 
     if (shouldShowLeftDots && !shouldShowRightDots) {
-      let rightItemCount = 5
+      let rightItemCount = 7
       let rightRange = Array.from({ length: rightItemCount }, (_, i) => totalPages - rightItemCount + i + 1)
       return [1, "...", ...rightRange]
     }
