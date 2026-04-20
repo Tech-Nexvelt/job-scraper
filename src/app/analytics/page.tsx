@@ -29,7 +29,7 @@ const monthlyPerformance = [
   { month: "Apr", applications: 15, interviews: 5 },
 ]
 
-import { useJobs } from "@/hooks/useJobs"
+import { useJobs } from "@/context/jobs-context"
 
 export default function AnalyticsPage() {
   const { jobs, isLoading } = useJobs()

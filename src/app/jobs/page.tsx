@@ -6,7 +6,6 @@ import { JobCard } from "@/components/JobCard"
 import { JobTable } from "@/components/JobTable"
 import { ToggleView } from "@/components/ToggleView"
 import { useSearchParams } from "next/navigation"
-import { fetchJobs } from "@/lib/api"
 import { ATSScoreDialog } from "@/components/ATSScoreDialog"
 
 import { useJobs } from "@/context/jobs-context"
@@ -26,6 +25,7 @@ function JobsContent() {
   const [todayStr, setTodayStr] = useState<string | null>(null)
 
   useEffect(() => {
+     
     setTodayStr(format(new Date(), "yyyy-MM-dd"))
   }, [])
 
@@ -44,8 +44,6 @@ function JobsContent() {
       params.delete("date")
     }
     window.history.replaceState(null, "", `?${params.toString()}`)
-    // Reset showAll when a specific date is picked
-    if (date) setShowAll(false)
   }, [date, searchParams])
 
   const JOBS_PER_PAGE = 20
@@ -135,19 +133,19 @@ function JobsContent() {
     const shouldShowRightDots = rightSiblingIndex < totalPages - 2
 
     if (!shouldShowLeftDots && shouldShowRightDots) {
-      let leftItemCount = 7
-      let leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1)
+      const leftItemCount = 7
+      const leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1)
       return [...leftRange, "...", totalPages]
     }
 
     if (shouldShowLeftDots && !shouldShowRightDots) {
-      let rightItemCount = 7
-      let rightRange = Array.from({ length: rightItemCount }, (_, i) => totalPages - rightItemCount + i + 1)
+      const rightItemCount = 7
+      const rightRange = Array.from({ length: rightItemCount }, (_, i) => totalPages - rightItemCount + i + 1)
       return [1, "...", ...rightRange]
     }
 
     if (shouldShowLeftDots && shouldShowRightDots) {
-      let middleRange = Array.from({ length: rightSiblingIndex - leftSiblingIndex + 1 }, (_, i) => leftSiblingIndex + i)
+      const middleRange = Array.from({ length: rightSiblingIndex - leftSiblingIndex + 1 }, (_, i) => leftSiblingIndex + i)
       return [1, "...", ...middleRange, "...", totalPages]
     }
 
@@ -193,7 +191,14 @@ function JobsContent() {
             )
           })}
           <div className="h-px flex-1 bg-border min-w-4" />
-          <DatePicker date={date && !quickDays.some(d => d.dateStr === activeDateStr) ? date : undefined} setDate={setDate} label="Older dates…" />
+          <DatePicker 
+            date={date && !quickDays.some(d => d.dateStr === activeDateStr) ? date : undefined} 
+            setDate={(newDate) => {
+              setDate(newDate)
+              if (newDate) setShowAll(false)
+            }} 
+            label="Older dates…" 
+          />
         </div>
       )}
 

@@ -7,7 +7,7 @@ import { JobTable } from "@/components/JobTable"
 import { ToggleView } from "@/components/ToggleView"
 import { Bookmark } from "lucide-react"
 import { useSearchParams } from "next/navigation"
-import { useJobs } from "@/hooks/useJobs"
+import { useJobs } from "@/context/jobs-context"
 import { ATSScoreDialog } from "@/components/ATSScoreDialog"
 
 function SavedJobsContent() {

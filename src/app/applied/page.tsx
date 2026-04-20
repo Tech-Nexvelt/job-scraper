@@ -44,7 +44,7 @@ function AppliedContent() {
             <CheckCircle2 className="text-emerald-500 h-8 w-8" />
             Applied Jobs
           </h1>
-          <p className="text-muted-foreground">Keep track of the roles you've applied for</p>
+          <p className="text-muted-foreground">Keep track of the roles you&apos;ve applied for</p>
         </div>
         <ToggleView view={view} onViewChange={setView} />
       </div>
@@ -80,7 +80,7 @@ function AppliedContent() {
              <CheckCircle2 className="h-8 w-8 text-muted-foreground" />
           </div>
           <h3 className="text-xl font-semibold">No applied jobs yet</h3>
-          <p className="text-muted-foreground mt-1 max-w-xs text-center">Start applying from 'All Jobs' to see your tracked applications here</p>
+          <p className="text-muted-foreground mt-1 max-w-xs text-center">Start applying from &apos;All Jobs&apos; to see your tracked applications here</p>
         </div>
       )}
 

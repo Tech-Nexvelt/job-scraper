@@ -1,4 +1,4 @@
-import { Job, JobStatus, MOCK_JOBS } from "./data";
+import { Job, JobStatus } from "./data";
 import { supabase } from "./supabase";
 
 export async function fetchJobs(): Promise<Job[]> {
@@ -11,7 +11,7 @@ export async function fetchJobs(): Promise<Job[]> {
     if (error) throw error;
     
     // Map API data to Frontend Job interface
-    const allJobs: Job[] = (data as any[]).map((item) => ({
+    const allJobs: Job[] = (data || []).map((item) => ({
       id: item.id.toString(),
       title: item.job_title || "Untitled Position",
       company: item.company || "Unknown Company",
