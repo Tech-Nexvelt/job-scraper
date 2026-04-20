@@ -25,13 +25,29 @@ import {
 } from "@/components/ui/select"
 import { ProfileDialog } from "@/components/ProfileDialog"
 import { useProfile } from "@/context/profile-context"
+import { useJobs } from "@/context/jobs-context"
+
+const formatDomain = (domain: string) => {
+  return domain.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+}
 
 export function Navbar() {
   const { setTheme, theme } = useTheme()
   const { profile } = useProfile()
+  const { jobs } = useJobs()
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
+
+  const uniqueRoles = React.useMemo(() => {
+    const roles = Array.from(new Set(jobs.map(j => j.role).filter(Boolean)))
+    return roles.sort()
+  }, [jobs])
+
+  const uniqueDomains = React.useMemo(() => {
+    const domains = Array.from(new Set(jobs.map(j => j.domain).filter(Boolean)))
+    return domains.sort()
+  }, [jobs])
 
   const handleSearch = (query: string) => {
     const params = new URLSearchParams(searchParams)
@@ -89,7 +105,7 @@ export function Navbar() {
           <Input
             type="search"
             placeholder="Search jobs..."
-            className="w-full bg-muted/50 pl-9 md:w-[250px] lg:w-[350px] border-none shadow-none focus-visible:ring-1"
+            className="w-full bg-muted/50 pl-9 md:w-[200px] lg:w-[300px] border-none shadow-none focus-visible:ring-1"
             defaultValue={searchParams.get("q") || ""}
             onChange={(e) => handleSearch(e.target.value)}
           />
@@ -100,18 +116,34 @@ export function Navbar() {
             value={searchParams.get("role") || "all"} 
             onValueChange={(val) => handleFilter("role", val)}
           >
-            <SelectTrigger className="h-9 w-[130px] bg-muted/50 border-none shadow-none focus:ring-0 text-xs">
+            <SelectTrigger className="h-9 w-[140px] bg-muted/50 border-none shadow-none focus:ring-0 text-xs">
               <div className="flex items-center gap-2">
                 <Filter className="h-3 w-3 text-muted-foreground" />
                 <SelectValue placeholder="All Roles" />
               </div>
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-[300px]">
               <SelectItem value="all">All Roles</SelectItem>
-              <SelectItem value="Frontend Developer">Frontend</SelectItem>
-              <SelectItem value="Backend Developer">Backend</SelectItem>
-              <SelectItem value="Full Stack">Full Stack</SelectItem>
-              <SelectItem value="Data Analyst">Data Analyst</SelectItem>
+              {uniqueRoles.map(role => (
+                <SelectItem key={role} value={role}>{role}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select 
+            value={searchParams.get("domain") || "all"} 
+            onValueChange={(val) => handleFilter("domain", val)}
+          >
+            <SelectTrigger className="h-9 w-[180px] bg-muted/50 border-none shadow-none focus:ring-0 text-xs text-left">
+              <SelectValue placeholder="All Domains" />
+            </SelectTrigger>
+            <SelectContent className="max-h-[300px]">
+              <SelectItem value="all">All Domains</SelectItem>
+              {uniqueDomains.map(domain => (
+                <SelectItem key={domain} value={domain}>
+                  {formatDomain(domain)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -122,7 +154,7 @@ export function Navbar() {
             <SelectTrigger className="h-9 w-[130px] bg-muted/50 border-none shadow-none focus:ring-0 text-xs text-left">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-[300px]">
               <SelectItem value="all">All Status</SelectItem>
               <SelectItem value="Applied">Applied</SelectItem>
               <SelectItem value="Not Applied">Not Applied</SelectItem>

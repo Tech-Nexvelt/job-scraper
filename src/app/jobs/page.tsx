@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation"
 import { fetchJobs } from "@/lib/api"
 import { ATSScoreDialog } from "@/components/ATSScoreDialog"
 
-import { useJobs } from "@/hooks/useJobs"
+import { useJobs } from "@/context/jobs-context"
 import { DatePicker } from "@/components/DatePicker"
 import { format, parseISO, subDays } from "date-fns"
 import { Calendar as CalendarIcon, History } from "lucide-react"
@@ -33,6 +33,7 @@ function JobsContent() {
   const searchQuery = searchParams.get("q") || ""
   const roleFilter = searchParams.get("role") || "all"
   const statusFilter = searchParams.get("status") || "all"
+  const domainFilter = searchParams.get("domain") || "all"
 
   // Sync date with URL params
   useEffect(() => {
@@ -51,16 +52,17 @@ function JobsContent() {
   const [currentPage, setCurrentPage] = useState(1)
 
   // Reset to page 1 when any filter changes - using render-time adjustment for React 18/19 compatibility
-  const [prevFilters, setPrevFilters] = useState({ searchQuery, roleFilter, statusFilter, date, showAll })
+  const [prevFilters, setPrevFilters] = useState({ searchQuery, roleFilter, statusFilter, domainFilter, date, showAll })
   if (
       prevFilters.searchQuery !== searchQuery || 
-      prevFilters.roleFilter !== roleFilter || 
+      prevFilters.roleFilter !== roleFilter ||
       prevFilters.statusFilter !== statusFilter || 
+      prevFilters.domainFilter !== domainFilter || 
       prevFilters.date !== date || 
       prevFilters.showAll !== showAll
   ) {
     setCurrentPage(1)
-    setPrevFilters({ searchQuery, roleFilter, statusFilter, date, showAll })
+    setPrevFilters({ searchQuery, roleFilter, statusFilter, domainFilter, date, showAll })
   }
 
   const filteredJobs = useMemo(() => {
@@ -74,18 +76,19 @@ function JobsContent() {
       
       const matchesRole = roleFilter === "all" || job.role === roleFilter
       const matchesStatus = statusFilter === "all" || job.status === statusFilter
+      const matchesDomain = domainFilter === "all" || job.domain === domainFilter
       
       if (date) {
         const selectedDateStr = format(date, "yyyy-MM-dd")
-        return matchesSearch && matchesRole && matchesStatus && job.dateAdded === selectedDateStr
+        return matchesSearch && matchesRole && matchesStatus && matchesDomain && job.dateAdded === selectedDateStr
       } else if (!showAll) {
         const sevenDaysAgoStr = format(subDays(new Date(), 7), "yyyy-MM-dd")
-        return matchesSearch && matchesRole && matchesStatus && job.dateAdded >= sevenDaysAgoStr
+        return matchesSearch && matchesRole && matchesStatus && matchesDomain && job.dateAdded >= sevenDaysAgoStr
       } else {
-        return matchesSearch && matchesRole && matchesStatus
+        return matchesSearch && matchesRole && matchesStatus && matchesDomain
       }
     })
-  }, [jobs, searchQuery, roleFilter, statusFilter, date, showAll, todayStr])
+  }, [jobs, searchQuery, roleFilter, statusFilter, domainFilter, date, showAll, todayStr])
 
   const totalPages = Math.ceil(filteredJobs.length / JOBS_PER_PAGE)
   

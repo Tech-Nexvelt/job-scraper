@@ -40,12 +40,19 @@ COMPANIES_PATH = Path(__file__).parent / "companies.json"
 
 # Comprehensive Search Keywords across all required domains
 DOMAIN_KEYWORDS = {
-    "Data": ["Data Analyst", "Data Engineer", "Data Scientist", "Business Intelligence", "Analytics"],
-    "Software": ["Software Engineer", "Fullstack Developer", "Frontend Developer", "Backend Developer", "DevOps Engineer"],
-    "Business": ["Business Analyst", "Financial Analyst", "CRM Manager", "Credit Risk"],
-    "Healthcare": ["Biomedical Engineer", "Clinical Research", "Clinical Data Analyst", "Healthcare"],
-    "Engineering": ["Electrical Engineer", "Mechanical Engineer", "Civil Engineer", "Chemical Engineer"],
-    "Security": ["Cybersecurity Analyst", "Information Security", "AML Investigator", "Security Engineer"]
+    "software_engineering": ["Software Engineer", "Frontend Developer", "Backend Developer", "Fullstack Developer"],
+    "ai_ml_data": ["Machine Learning Engineer", "AI Engineer", "Data Scientist", "GenAI"],
+    "data_analytics": ["Data Analyst", "Business Intelligence", "Dashboard Developer"],
+    "data_engineering": ["Data Engineer", "ETL Engineer", "Big Data Engineer"],
+    "cloud_devops": ["DevOps Engineer", "Cloud Architect", "SRE"],
+    "cyber_security": ["Cybersecurity", "Network Security", "Security Engineer"],
+    "finance_compliance": ["Financial Analyst", "Risk Analyst", "Compliance Officer"],
+    "healthcare_lifescience": ["Biotech Engineer", "Clinical Data", "Biomedical"],
+    "core_engineering": ["Mechanical Engineer", "Electrical Engineer", "Hardware Engineer"],
+    "industrial_automation": ["PLC Programmer", "Robotics Engineer", "Automation Engineer"],
+    "enterprise_tools": ["Salesforce Developer", "SAP Consultant", "ServiceNow Developer"],
+    "agriculture": ["Agritech", "Agriculture Assistant", "Farming Analyst"],
+    "it_support": ["IT Support", "System Administrator", "Technical Support"]
 }
 
 # Flat list of all keywords for global scrapers
@@ -162,7 +169,7 @@ async def run() -> int:
     enriched_jobs = []
     for job in all_raw_jobs:
         job["role"] = classify_role(job["job_title"], job.get("description", ""))
-        job["domain"] = get_domain(job["job_title"])
+        job["domain"] = get_domain(job["job_title"], job.get("description", ""))
         job["last_scraped_at"] = datetime.now(timezone.utc).isoformat()
         enriched_jobs.append(job)
 

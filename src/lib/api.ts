@@ -17,6 +17,7 @@ export async function fetchJobs(): Promise<Job[]> {
       company: item.company || "Unknown Company",
       location: item.location || "Remote",
       role: item.role || "General",
+      domain: item.domain || "Other",
       status: (item.status as JobStatus) || "Not Applied",
       dateAdded: item.created_at 
         ? new Date(item.created_at).toISOString().slice(0, 10)
@@ -28,9 +29,6 @@ export async function fetchJobs(): Promise<Job[]> {
     return allJobs;
   } catch (error) {
     console.error("Supabase Fetch Error:", error);
-    if (process.env.NODE_ENV === "development") {
-      return MOCK_JOBS;
-    }
     return [];
   }
 }

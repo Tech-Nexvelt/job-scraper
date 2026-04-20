@@ -6,7 +6,7 @@ import { StatsCard } from "@/components/StatsCard"
 import { RoleChart, StatusChart, ActivityChart } from "@/components/Charts"
 
 import { startOfMonth, subMonths, endOfMonth, parseISO } from "date-fns"
-import { useJobs } from "@/hooks/useJobs"
+import { useJobs } from "@/context/jobs-context"
 
 export default function DashboardPage() {
   const { jobs, isLoading } = useJobs()

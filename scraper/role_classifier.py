@@ -9,28 +9,52 @@ ROLE_KEYWORDS = {
 
 # Domain classification structure with priority order
 DOMAIN_MAPPING = [
-    ("Data", [
-        "data analyst", "data engineer", "data scientist", "business intelligence", 
-        "big data", "data center", "database", "analytics"
+    ("software_engineering", [
+        "dev", "developer", "engineer", "software", "programming", "frontend", "backend", 
+        "fullstack", "full stack", "full-stack", "web", "mobile", "api", "microservices", 
+        "react", "angular", "node", "django", "spring", "app developer"
     ]),
-    ("Software", [
-        "software engineer", "software developer", "full stack", "frontend", "front-end", 
-        "backend", "back-end", "devops", "cloud engineer", "embedded software", 
-        "atlassian", "jira", "dynamics 365", "web developer"
+    ("ai_ml_data", [
+        "ai", "ml", "machine learning", "deep learning", "nlp", "computer vision", 
+        "data scientist", "genai", "generative ai", "llm", "pytorch", "tensorflow", "ai engineer"
     ]),
-    ("Business", [
-        "business analyst", "crm", "financial analyst", "credit risk", "credit controller"
+    ("data_analytics", [
+        "analytics", "bi", "sql", "tableau", "power bi", "data analyst", "reporting", 
+        "dashboard", "excel", "visualization"
     ]),
-    ("Healthcare", [
-        "bioinformatics", "biotechnology", "clinical research", "clinical data", 
-        "ehr", "electronic health records", "healthcare"
+    ("data_engineering", [
+        "etl", "spark", "data warehouse", "data pipeline", "hadoop", "airflow", "kafka", "big data"
     ]),
-    ("Engineering", [
-        "electrical engineer", "chemical engineer", "construction", "controls engineer",
-        "mechanical engineer", "civil engineer"
+    ("cloud_devops", [
+        "cloud", "devops", "sre", "aws", "azure", "gcp", "kubernetes", "docker", 
+        "ci/cd", "terrafor", "infrastructure"
     ]),
-    ("Security", [
-        "cybersecurity", "cyber security", "anti money laundering", "aml", "information security"
+    ("cyber_security", [
+        "security", "cybersecurity", "pentest", "ethical hacking", "soc", "siem", 
+        "network security", "information security"
+    ]),
+    ("finance_compliance", [
+        "finance", "fintech", "accounting", "audit", "aml", "kyc", "risk", 
+        "compliance", "fraud", "taxation"
+    ]),
+    ("healthcare_lifescience", [
+        "medical", "healthcare", "pharma", "clinical", "biotech", "biomedical", 
+        "life sciences", "ehr", "emr"
+    ]),
+    ("core_engineering", [
+        "mechanical", "electrical", "civil", "hardware", "production", "manufacturing", "design engineer"
+    ]),
+    ("industrial_automation", [
+        "plc", "robotics", "control systems", "scada", "automation", "mechatronics"
+    ]),
+    ("enterprise_tools", [
+        "sap", "salesforce", "oracle", "crm", "erp", "dynamics 365", "servicenow"
+    ]),
+    ("agriculture", [
+        "agritech", "farming", "agriculture", "agronomy", "crop", "farm"
+    ]),
+    ("it_support", [
+        "support", "helpdesk", "system admin", "sysadmin", "it support", "desktop support", "technical support"
     ])
 ]
 
@@ -44,15 +68,15 @@ def classify_role(title: str, description: str = "") -> str:
             return role
     return "General"
 
-def get_domain(job_title: str) -> str:
+def get_domain(job_title: str, description: str = "") -> str:
     """
     Classifies jobs into domains using keyword mapping with priority order:
-    Data -> Software -> Business -> Healthcare -> Engineering -> Security -> Other
+    Software -> AI/ML -> Data Eng -> Data Analytics -> etc.
     """
-    title_lower = job_title.lower()
+    text = (job_title + " " + description).lower()
     
     for domain, keywords in DOMAIN_MAPPING:
-        if any(kw in title_lower for kw in keywords):
+        if any(kw in text for kw in keywords):
             return domain
             
-    return "Other"
+    return "other"

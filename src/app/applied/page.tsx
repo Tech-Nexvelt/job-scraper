@@ -8,7 +8,7 @@ import { ToggleView } from "@/components/ToggleView"
 import { useSearchParams } from "next/navigation"
 import { ATSScoreDialog } from "@/components/ATSScoreDialog"
 import { CheckCircle2 } from "lucide-react"
-import { useJobs } from "@/hooks/useJobs"
+import { useJobs } from "@/context/jobs-context"
 
 function AppliedContent() {
   const { jobs: allJobs, isLoading, toggleBookmark, updateStatus } = useJobs()

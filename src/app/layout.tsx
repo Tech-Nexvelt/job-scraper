@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ProfileProvider } from "@/context/profile-context";
+import { JobsProvider } from "@/context/jobs-context";
 import { Sidebar } from "@/components/Sidebar";
 import { Navbar } from "@/components/Navbar";
 import { Suspense } from "react";
@@ -39,19 +40,21 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ProfileProvider>
-            <div className="flex h-screen overflow-hidden bg-background">
-              <Sidebar />
-              <div className="flex flex-1 flex-col overflow-hidden">
-                <Suspense>
-                  <Navbar />
-                </Suspense>
-                <main className="flex-1 overflow-y-auto p-6">
-                  {children}
-                </main>
+          <JobsProvider>
+            <ProfileProvider>
+              <div className="flex h-screen overflow-hidden bg-background">
+                <Sidebar />
+                <div className="flex flex-1 flex-col overflow-hidden">
+                  <Suspense>
+                    <Navbar />
+                  </Suspense>
+                  <main className="flex-1 overflow-y-auto p-6">
+                    {children}
+                  </main>
+                </div>
               </div>
-            </div>
-          </ProfileProvider>
+            </ProfileProvider>
+          </JobsProvider>
         </ThemeProvider>
       </body>
     </html>
