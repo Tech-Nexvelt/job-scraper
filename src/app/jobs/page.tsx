@@ -116,6 +116,41 @@ function JobsContent() {
 
   const activeDateStr = date ? format(date, "yyyy-MM-dd") : null
 
+  // Generate pagination range with ellipses
+  const getPaginationRange = () => {
+    const siblingCount = 1
+    const totalPageNumbers = 7 // Adjust logic to show roughly 7 slots
+
+    if (totalPages <= totalPageNumbers) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1)
+    }
+
+    const leftSiblingIndex = Math.max(currentPage - siblingCount, 1)
+    const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPages)
+
+    const shouldShowLeftDots = leftSiblingIndex > 2
+    const shouldShowRightDots = rightSiblingIndex < totalPages - 2
+
+    if (!shouldShowLeftDots && shouldShowRightDots) {
+      let leftItemCount = 5
+      let leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1)
+      return [...leftRange, "...", totalPages]
+    }
+
+    if (shouldShowLeftDots && !shouldShowRightDots) {
+      let rightItemCount = 5
+      let rightRange = Array.from({ length: rightItemCount }, (_, i) => totalPages - rightItemCount + i + 1)
+      return [1, "...", ...rightRange]
+    }
+
+    if (shouldShowLeftDots && shouldShowRightDots) {
+      let middleRange = Array.from({ length: rightSiblingIndex - leftSiblingIndex + 1 }, (_, i) => leftSiblingIndex + i)
+      return [1, "...", ...middleRange, "...", totalPages]
+    }
+
+    return Array.from({ length: totalPages }, (_, i) => i + 1)
+  }
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -228,14 +263,23 @@ function JobsContent() {
                   Previous
                 </Button>
                 
-                <div className="flex items-center gap-2">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                    const isActive = currentPage === page
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  {getPaginationRange().map((page, index) => {
+                    if (page === "...") {
+                      return (
+                        <div key={`dots-${index}`} className="w-10 h-10 flex items-center justify-center text-muted-foreground font-bold">
+                          ...
+                        </div>
+                      )
+                    }
+                    
+                    const pageNum = page as number
+                    const isActive = currentPage === pageNum
                     return (
                       <button
-                        key={page}
+                        key={index}
                         onClick={() => {
-                          setCurrentPage(page)
+                          setCurrentPage(pageNum)
                           window.scrollTo({ top: 0, behavior: 'smooth' })
                         }}
                         className={[
@@ -245,7 +289,7 @@ function JobsContent() {
                             : "bg-background text-muted-foreground border-border hover:border-primary/60 hover:text-primary hover:scale-105",
                         ].join(" ")}
                       >
-                        {page}
+                        {pageNum}
                       </button>
                     )
                   })}
@@ -264,6 +308,7 @@ function JobsContent() {
                   Next
                 </Button>
               </div>
+
               <div className="flex items-center gap-2 px-4 py-1.5 bg-muted/30 rounded-full border border-border/50">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Showing <span className="text-foreground">{((currentPage - 1) * JOBS_PER_PAGE) + 1}</span> - <span className="text-foreground">{Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)}</span> of <span className="text-foreground">{filteredJobs.length}</span> results
@@ -271,7 +316,6 @@ function JobsContent() {
               </div>
             </div>
           )}
-
 
           {!date && !showAll && !date && filteredJobs.length >= JOBS_PER_PAGE && (
              <div className="flex flex-col items-center justify-center pt-8">
