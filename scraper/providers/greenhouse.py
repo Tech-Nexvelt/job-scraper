@@ -14,8 +14,19 @@ async def scrape_greenhouse(company: Dict, page: Page) -> List[Dict]:
     url = company["careers_url"]
     name = company["name"]
     
-    # Extract board token from URL (e.g., dropbox from boards.greenhouse.io/dropbox)
-    token = url.rstrip("/").split("/")[-1]
+    # Extract board token from explicit ID or URL (e.g., dropbox from boards.greenhouse.io/dropbox)
+    token = company.get("greenhouse_id")
+    if not token:
+        # Fallback to extraction from URL
+        if "boards.greenhouse.io/" in url:
+            token = url.rstrip("/").split("/")[-1]
+        elif "boards-api.greenhouse.io" not in url:
+            # Try to handle generic careers URLs by name if Greenhouse is specified as provider
+            token = name.lower().replace(" ", "")
+            logger.warning(f"Greenhouse: Inferred token '{token}' for {name} from name. This might fail if the slug differs.")
+        else:
+            token = url.rstrip("/").split("/")[-1]
+
     api_url = f"https://boards-api.greenhouse.io/v1/boards/{token}/jobs"
     
     jobs = []

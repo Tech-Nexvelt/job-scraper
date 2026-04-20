@@ -17,7 +17,7 @@ async def scrape_amazon(company: Dict, page: Page) -> List[Dict]:
     try:
         # Navigate to Amazon Jobs
         # Amazon often redirects to a search page if you go to the root careers URL
-        await page.goto(url, wait_until="domcontentloaded", timeout=360000)
+        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
         
         # Wait for the main job results to appear
         # Amazon uses specific classes like 'job-tile' or 'job'

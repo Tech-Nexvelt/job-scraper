@@ -21,13 +21,13 @@ async def scrape_dice(keywords: List[str], page: Page) -> List[Dict]:
         # Added filters.postedDate=THREE (Closest to 48h/2-day limit)
         base_url = f"https://www.dice.com/jobs?q={encoded_keyword}&location=USA&filters.workSetting=On%20Site&filters.employmentType=Full%20Time&filters.postedDate=THREE"
         
-        # Scrape up to 5 pages (reduced from 10 to avoid bot detection while being resilient)
-        for page_num in range(1, 6):
+        # Scrape up to 3 pages (Reduced from 5 to save time)
+        for page_num in range(1, 4):
             url = f"{base_url}&page={page_num}"
             try:
                 logger.info(f"Dice: Fetching page {page_num} for {keyword}")
-                # Use very generous timeout for navigation
-                await page.goto(url, wait_until="load", timeout=360000)
+                # Use reasonable timeout for navigation
+                await page.goto(url, wait_until="load", timeout=60000)
                 
                 # Check for "Zero Results" messages so we don't wait for selectors in vain
                 no_results_text = ["we couldn't find any jobs", "0 jobs matching", "no results found"]
@@ -38,7 +38,7 @@ async def scrape_dice(keywords: List[str], page: Page) -> List[Dict]:
                 # Wait for results or empty state - increased to 360s
                 # We try multiple common selectors for Dice cards
                 try:
-                    await page.wait_for_selector("d-card, [data-cy='card-title-link'], .card-title-link", timeout=360000)
+                    await page.wait_for_selector("d-card, [data-cy='card-title-link'], .card-title-link", timeout=30000)
                 except Exception:
                     logger.warning(f"Dice: Timeout waiting for cards on page {page_num}. Page might be blocked or empty.")
                     break

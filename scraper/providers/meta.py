@@ -14,7 +14,7 @@ async def scrape_meta(company: Dict, page: Page) -> List[Dict]:
     jobs = []
     
     try:
-        await page.goto(url, wait_until="domcontentloaded", timeout=360000)
+        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
         await page.wait_for_timeout(8000)
         
         # Meta uses a specific card structure

@@ -14,7 +14,7 @@ async def scrape_google(company: Dict, page: Page) -> List[Dict]:
     jobs = []
     
     try:
-        await page.goto(url, wait_until="domcontentloaded", timeout=360000)
+        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
         await page.wait_for_timeout(8000)
         
         # Google uses aria-labels for job links

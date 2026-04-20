@@ -67,29 +67,32 @@ async def scrape_wrapper(company: Dict, browser_context) -> List[Dict]:
             try:
                 page = await browser_context.new_page()
                 
-                jobs = []
-                if provider == "dice":
-                    jobs = await scrape_dice(KEYWORDS, page)
-                elif provider == "linkedin":
-                    jobs = await scrape_linkedin(KEYWORDS, page)
-                elif provider == "greenhouse":
-                    jobs = await scrape_greenhouse(company, page)
-                elif provider == "lever":
-                    jobs = await scrape_lever(company, page)
-                elif provider == "workday":
-                    jobs = await scrape_workday(company, page)
-                elif provider == "amazon":
-                    jobs = await scrape_amazon(company, page)
-                elif provider == "apple":
-                    jobs = await scrape_apple(company, page)
-                elif provider == "google":
-                    jobs = await scrape_google(company, page)
-                elif provider == "microsoft":
-                    jobs = await scrape_microsoft(company, page)
-                elif provider == "meta":
-                    jobs = await scrape_meta(company, page)
-                else:
-                    jobs = await scrape_custom(company, page)
+                async def inner_scrape():
+                    if provider == "dice":
+                        return await scrape_dice(KEYWORDS, page)
+                    elif provider == "linkedin":
+                        return await scrape_linkedin(KEYWORDS, page)
+                    elif provider == "greenhouse":
+                        return await scrape_greenhouse(company, page)
+                    elif provider == "lever":
+                        return await scrape_lever(company, page)
+                    elif provider == "workday":
+                        return await scrape_workday(company, page)
+                    elif provider == "amazon":
+                        return await scrape_amazon(company, page)
+                    elif provider == "apple":
+                        return await scrape_apple(company, page)
+                    elif provider == "google":
+                        return await scrape_google(company, page)
+                    elif provider == "microsoft":
+                        return await scrape_microsoft(company, page)
+                    elif provider == "meta":
+                        return await scrape_meta(company, page)
+                    else:
+                        return await scrape_custom(company, page)
+
+                # Implement a per-company timeout of 15 minutes to prevent stalling the entire 6h run
+                jobs = await asyncio.wait_for(inner_scrape(), timeout=900)
                 
                 await page.close()
                 

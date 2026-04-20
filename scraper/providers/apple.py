@@ -14,7 +14,7 @@ async def scrape_apple(company: Dict, page: Page) -> List[Dict]:
     jobs = []
     
     try:
-        await page.goto(url, wait_until="domcontentloaded", timeout=360000)
+        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
         await page.wait_for_timeout(8000)
         
         # Apple uses table rows for job listings

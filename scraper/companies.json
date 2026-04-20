@@ -2,12 +2,14 @@
   {
     "name": "Github",
     "careers_url": "https://boards.greenhouse.io/github",
+    "greenhouse_id": "github",
     "provider": "greenhouse",
     "location": "USA"
   },
   {
     "name": "Atlassian",
     "careers_url": "https://boards.greenhouse.io/atlassian",
+    "greenhouse_id": "atlassian",
     "provider": "greenhouse",
     "location": "USA/Global"
   },
@@ -50,6 +52,7 @@
   {
     "name": "Palantir",
     "careers_url": "https://boards.greenhouse.io/palantirtechnologies",
+    "greenhouse_id": "palantirtechnologies",
     "provider": "greenhouse",
     "location": "USA/UK"
   },
@@ -145,7 +148,8 @@
   },
   {
     "name": "Uber",
-    "careers_url": "https://www.uber.com/us/en/careers",
+    "careers_url": "https://boards.greenhouse.io/uber",
+    "greenhouse_id": "uber",
     "provider": "greenhouse",
     "location": "USA"
   },
@@ -223,7 +227,7 @@
   },
   {
     "name": "Target",
-    "careers_url": "https://careers.target.com",
+    "careers_url": "https://target.wd1.myworkdayjobs.com/targetcareers",
     "provider": "workday",
     "location": "USA"
   },
@@ -235,7 +239,7 @@
   },
   {
     "name": "Delta Airlines",
-    "careers_url": "https://careers.delta.com",
+    "careers_url": "https://delta.wd1.myworkdayjobs.com/Careers",
     "provider": "workday",
     "location": "USA"
   },

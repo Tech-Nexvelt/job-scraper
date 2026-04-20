@@ -20,8 +20,8 @@ async def scrape_linkedin(keywords: List[str], page: Page) -> List[Dict]:
         # f_WT=1 (On-site), f_JT=F (Full-time), f_TPR=r172800 (Past 48 Hours)
         base_url = f"https://www.linkedin.com/jobs/search?keywords={encoded_keyword}&location=United%20States&f_WT=1&f_JT=F&f_TPR=r172800"
         
-        # Scrape up to 10 pages (250 jobs) per keyword to meet the 20-jobs-per-role quota
-        for page_num in range(0, 10):
+        # Scrape up to 5 pages (125 jobs) per keyword (Reduced from 10 to save time)
+        for page_num in range(0, 5):
             start = page_num * 25
             url = f"{base_url}&start={start}"
             
@@ -34,8 +34,8 @@ async def scrape_linkedin(keywords: List[str], page: Page) -> List[Dict]:
                     "Referer": "https://www.google.com/"
                 })
                 
-                # Set a very generous timeout for LinkedIn navigation
-                await page.goto(url, wait_until="domcontentloaded", timeout=360000)
+                # Set a reasonable timeout for LinkedIn navigation
+                await page.goto(url, wait_until="domcontentloaded", timeout=60000)
                 await page.wait_for_timeout(4000) # Wait for cards
                 
                 # Scroll a bit to trigger more loading if it's dynamic
